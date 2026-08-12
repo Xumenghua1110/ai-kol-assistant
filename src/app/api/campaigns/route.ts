@@ -9,10 +9,8 @@ export async function GET() {
     });
     return NextResponse.json(campaigns);
   } catch (error) {
-    return NextResponse.json(
-      { error: "Failed to fetch campaigns" },
-      { status: 500 }
-    );
+    // Return empty array if database is not available
+    return NextResponse.json([]);
   }
 }
 

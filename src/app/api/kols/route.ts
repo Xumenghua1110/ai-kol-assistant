@@ -8,6 +8,15 @@ function getTier(followers: number): string {
   return "Nano";
 }
 
+// Demo KOLs for when database is not available
+const demoKols = [
+  { id: "1", name: "Energia Solar Master", platform: "YouTube", followers: 245000, niche: "Solar Energy", region: "Brazil", engagement: "High", status: "Contacted", language: "Portuguese", tier: "Macro", contactInfo: { emails: ["contato@energiasolarmaster.com.br"], phones: ["+5511999998888"], instagrams: ["energiasolarmaster"], youtubes: [] } },
+  { id: "2", name: "Solar Brasil", platform: "YouTube", followers: 180000, niche: "Solar Installation", region: "Brazil", engagement: "High", status: "New", language: "Portuguese", tier: "Macro", contactInfo: { emails: ["contato@solarbrasil.com.br"], phones: [], instagrams: ["solarbrasil"], youtubes: [] } },
+  { id: "3", name: "El profe chris", platform: "YouTube", followers: 95000, niche: "Solar Education", region: "Mexico", engagement: "Medium", status: "Analyzed", language: "Spanish", tier: "Micro", contactInfo: { emails: ["christian@elprofechris.com"], phones: [], instagrams: ["elprofechris"], youtubes: [] } },
+  { id: "4", name: "Solar Culture", platform: "Instagram", followers: 45000, niche: "Solar Installation", region: "Brazil", engagement: "High", status: "Contacted", language: "Portuguese", tier: "Micro", contactInfo: { emails: ["hello@solarculture.com.br"], phones: ["+5511888887777"], instagrams: ["solarculture"], youtubes: [] } },
+  { id: "5", name: "Jeff Bala", platform: "Instagram", followers: 32000, niche: "Solar Energy", region: "USA", engagement: "Medium", status: "New", language: "English", tier: "Micro", contactInfo: { emails: [], phones: [], instagrams: ["jeffbala"], youtubes: [] } },
+];
+
 // GET all KOLs
 export async function GET() {
   try {
@@ -26,10 +35,8 @@ export async function GET() {
     }));
     return NextResponse.json(result);
   } catch (error) {
-    return NextResponse.json(
-      { error: "Failed to fetch KOLs" },
-      { status: 500 }
-    );
+    // Return demo data if database is not available
+    return NextResponse.json(demoKols);
   }
 }
 
