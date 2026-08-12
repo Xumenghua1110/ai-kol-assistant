@@ -274,7 +274,7 @@ export default function KOLDiscovery() {
                     </div>
                     <div>
                       <h3 className="font-medium text-[var(--foreground)] group-hover:text-[var(--primary)] transition-colors">{kol.name}</h3>
-                      <p className="text-sm text-[var(--muted)] mt-0.5">{kol.niche || "Solar Energy"} · {translateText(kol.region) || "No region"}{kol.language ? ` · ${translateText(kol.language || "")}` : ""}</p>
+                      <p className="text-sm text-[var(--muted)] mt-0.5">{kol.niche || "Solar Energy"} · {translateText(kol.region || "") || "No region"}{kol.language ? ` · ${translateText(kol.language)}` : ""}</p>
                     </div>
                   </div>
                   <div className="flex items-center gap-3">
