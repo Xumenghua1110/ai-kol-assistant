@@ -1,0 +1,82 @@
+// Prisma Schema — AI KOL Outreach Assistant
+// Run `npx prisma generate` after changes to update the client
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+model KOL {
+  id            String    @id @default(cuid())
+  name          String
+  platform      String    // YouTube, Instagram, TikTok
+  profileUrl    String?
+  followers     Int       @default(0)
+  niche         String?
+  region        String?
+  engagement    String?   // Low, Medium, High
+  status        String    @default("New") // New, Analyzed, Contacted, Collaborating
+  notes         String?
+  language        String?   // Portuguese, Spanish, English, Chinese
+  contactInfo     String?   // JSON string: { emails, phones, instagrams, youtubes }
+  priority        String?   // Critical, High, Medium, Low
+  tier            String?   // Mega, Macro, Micro, Nano
+  engagementRate  Float?    // Interaction rate percentage
+  avgViews        Int?      // Average views per video
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @updatedAt
+
+  analyses      Analysis[]
+  emails        Email[]
+
+  @@map("kols")
+}
+
+model Analysis {
+  id              String   @id @default(cuid())
+  kolId           String
+  contentStyle    String?
+  audienceProfile String?
+  engagementQuality String?
+  brandFitScore   Float?
+  recommendations String?  // JSON string
+  riskFactors     String?  // JSON string
+  rawResponse     String?  // Full AI response
+  createdAt       DateTime @default(now())
+
+  kol             KOL      @relation(fields: [kolId], references: [id], onDelete: Cascade)
+
+  @@map("analyses")
+}
+
+model Email {
+  id              String   @id @default(cuid())
+  kolId           String
+  subject         String?
+  body            String
+  language        String   @default("English")
+  cooperationType String   @default("gift") // gift, paid, commission
+  tone            String   @default("professional and warm")
+  channel         String   @default("email") // email, whatsapp, instagram
+  status          String   @default("Draft") // Draft, Sent, Replied
+  createdAt       DateTime @default(now())
+
+  kol             KOL      @relation(fields: [kolId], references: [id], onDelete: Cascade)
+
+  @@map("emails")
+}
+
+model Campaign {
+  id        String   @id @default(cuid())
+  name      String
+  status    String   @default("Planning") // Planning, Active, Completed
+  notes     String?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@map("campaigns")
+}
