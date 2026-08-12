@@ -292,7 +292,7 @@ export async function POST(request: Request) {
     const coopLabel = coopMap[cooperationType] || cooperationType || 'Gift (free products for testing/use)';
 
     const msgChannel = channel || 'email';
-    let messages: { role: string; content: string }[];
+    let messages: any[];
     let useShortMsgModel = false;
 
     if (msgChannel === 'whatsapp') {
