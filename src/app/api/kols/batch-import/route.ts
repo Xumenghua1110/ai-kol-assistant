@@ -10,6 +10,7 @@ function getTier(followers: number): string {
 
 export async function POST(request: Request) {
   try {
+    if (!prisma) return NextResponse.json({ error: "Database not available" }, { status: 503 });
     const body = await request.json();
     const kols = body.kols || [];
 

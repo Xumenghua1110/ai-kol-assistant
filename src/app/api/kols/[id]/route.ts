@@ -14,6 +14,7 @@ export async function GET(
   { params }: { params: { id: string } }
 ) {
   try {
+    if (!prisma) return NextResponse.json({ error: "Database not available" }, { status: 503 });
     const { id } = params;
     const kol = await prisma.kOL.findUnique({
       where: { id },
@@ -44,6 +45,7 @@ export async function PUT(
   { params }: { params: { id: string } }
 ) {
   try {
+    if (!prisma) return NextResponse.json({ error: "Database not available" }, { status: 503 });
     const { id } = params;
     const body = await request.json();
     const contactInfo = body.contactInfo
@@ -88,6 +90,7 @@ export async function DELETE(
   { params }: { params: { id: string } }
 ) {
   try {
+    if (!prisma) return NextResponse.json({ error: "Database not available" }, { status: 503 });
     const { id } = params;
     await prisma.kOL.delete({ where: { id } });
     return NextResponse.json({ success: true });

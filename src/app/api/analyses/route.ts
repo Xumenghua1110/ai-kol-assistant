@@ -5,6 +5,7 @@ import { analyzeKOLProfile } from "@/lib/openai";
 // GET analyses for a KOL
 export async function GET(request: Request) {
   try {
+    if (!prisma) return NextResponse.json([]);
     const { searchParams } = new URL(request.url);
     const kolId = searchParams.get("kolId");
     if (!kolId) {
@@ -29,6 +30,7 @@ export async function GET(request: Request) {
 // POST create analysis (calls OpenAI)
 export async function POST(request: Request) {
   try {
+    if (!prisma) return NextResponse.json({ error: "Database not available" }, { status: 503 });
     const body = await request.json();
     const { kolId, kolData } = body;
 

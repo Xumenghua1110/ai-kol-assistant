@@ -4,6 +4,7 @@ import { prisma } from "@/lib/prisma";
 // GET all campaigns
 export async function GET() {
   try {
+    if (!prisma) return NextResponse.json([]);
     const campaigns = await prisma.campaign.findMany({
       orderBy: { createdAt: "desc" },
     });
@@ -17,6 +18,7 @@ export async function GET() {
 // POST create campaign
 export async function POST(request: Request) {
   try {
+    if (!prisma) return NextResponse.json({ error: "Database not available" }, { status: 503 });
     const body = await request.json();
     const campaign = await prisma.campaign.create({
       data: {

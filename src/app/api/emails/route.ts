@@ -5,6 +5,7 @@ import { openai } from "@/lib/openai";
 // GET emails
 export async function GET(request: Request) {
   try {
+    if (!prisma) return NextResponse.json([]);
     const { searchParams } = new URL(request.url);
     const kolId = searchParams.get("kolId");
     const status = searchParams.get("status");
@@ -26,6 +27,7 @@ export async function GET(request: Request) {
 // PATCH email status (e.g., mark as Sent)
 export async function PATCH(request: Request) {
   try {
+    if (!prisma) return NextResponse.json({ error: "Database not available" }, { status: 503 });
     const body = await request.json();
     const { id, status } = body;
     if (!id || !status) {
@@ -266,7 +268,7 @@ export async function POST(request: Request) {
 
     // Look up KOL from database if kolId provided
     let kolData: any = null;
-    if (kolId) {
+    if (kolId && prisma) {
       try {
         kolData = await prisma.kOL.findUnique({ where: { id: kolId } });
       } catch {
@@ -333,14 +335,14 @@ export async function POST(request: Request) {
     let validKolId = kolId || null;
 
     // If no kolId provided, use the first KOL in the database as fallback
-    if (!validKolId) {
+    if (!validKolId && prisma) {
       try {
         const firstKol = await prisma.kOL.findFirst({ select: { id: true } });
         if (firstKol) validKolId = firstKol.id;
       } catch { /* no KOLs in DB */ }
     }
 
-    if (validKolId) {
+    if (validKolId && prisma) {
       try {
         savedEmail = await prisma.email.create({
           data: {

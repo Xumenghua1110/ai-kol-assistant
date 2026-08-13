@@ -20,6 +20,7 @@ const demoKols = [
 // GET all KOLs
 export async function GET() {
   try {
+    if (!prisma) return NextResponse.json(demoKols);
     const kols = await prisma.kOL.findMany({
       orderBy: { createdAt: "desc" },
       include: {
@@ -43,6 +44,7 @@ export async function GET() {
 // POST create new KOL
 export async function POST(request: Request) {
   try {
+    if (!prisma) return NextResponse.json({ error: "Database not available" }, { status: 503 });
     const body = await request.json();
     const contactInfo = body.contactInfo
       ? (typeof body.contactInfo === 'string' ? body.contactInfo : JSON.stringify(body.contactInfo))

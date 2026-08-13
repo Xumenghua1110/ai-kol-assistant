@@ -12,6 +12,11 @@ const demoData = {
 
 // GET dashboard stats
 export async function GET() {
+  // Return demo data if database is not configured
+  if (!prisma) {
+    return NextResponse.json(demoData);
+  }
+  
   try {
     const [
       kolCount,
