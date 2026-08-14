@@ -65,9 +65,19 @@ export default function KOLDetail() {
   useEffect(() => {
     if (params.id) {
       fetch(`/api/kols/${params.id}`)
-        .then((res) => res.json())
+        .then((res) => {
+          if (!res.ok) {
+            // API returned error (e.g., 503 database unavailable)
+            setKol(null);
+            setLoading(false);
+            return null;
+          }
+          return res.json();
+        })
         .then((data) => {
-          setKol(data);
+          if (data) {
+            setKol(data);
+          }
           setLoading(false);
         })
         .catch(() => setLoading(false));
@@ -93,10 +103,11 @@ export default function KOLDetail() {
       });
       if (res.ok) {
         // Refresh KOL data to show new analysis
-        const updatedKol = await fetch(`/api/kols/${params.id}`).then((r) =>
-          r.json()
-        );
-        setKol(updatedKol);
+        const updatedRes = await fetch(`/api/kols/${params.id}`);
+        if (updatedRes.ok) {
+          const updatedKol = await updatedRes.json();
+          setKol(updatedKol);
+        }
       }
     } catch (error) {
       console.error("Failed to analyze KOL:", error);
@@ -132,7 +143,7 @@ export default function KOLDetail() {
   }
 
   const PlatformIcon = platformIcons[kol.platform] || Globe;
-  const latestAnalysis = kol.analyses[0];
+  const latestAnalysis = kol.analyses?.[0] || null;
   const recommendations = latestAnalysis?.recommendations
     ? JSON.parse(latestAnalysis.recommendations)
     : [];
