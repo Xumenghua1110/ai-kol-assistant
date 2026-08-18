@@ -51,6 +51,8 @@ export default function KOLDiscovery() {
   const [priorityFilter, setPriorityFilter] = useState("");
   const [selectedIds, setSelectedIds] = useState<Set<string>>(new Set());
   const [showBatchPanel, setShowBatchPanel] = useState(false);
+  const [showBatchEdit, setShowBatchEdit] = useState(false);
+  const [batchEditFields, setBatchEditFields] = useState({ status: "", priority: "", type: "", source: "", niche: "" });
   const [editKol, setEditKol] = useState<KOL | null>(null);
   const [deleteConfirm, setDeleteConfirm] = useState<string | null>(null);
 
@@ -103,6 +105,24 @@ export default function KOLDiscovery() {
     setKols(updated);
     localStorage.setItem(STORAGE_KEY, JSON.stringify(updated.filter((k) => !demoKols.find((d) => d.id === k.id))));
     setDeleteConfirm(null);
+  };
+
+  const saveBatchEdit = () => {
+    const updated = kols.map((k) => {
+      if (!selectedIds.has(k.id)) return k;
+      const next = { ...k, updatedAt: new Date().toISOString() };
+      if (batchEditFields.status) next.status = batchEditFields.status as OutreachStatus;
+      if (batchEditFields.priority) next.priority = batchEditFields.priority;
+      if (batchEditFields.type) next.type = batchEditFields.type as ContactType;
+      if (batchEditFields.source) next.source = batchEditFields.source;
+      if (batchEditFields.niche) next.niche = batchEditFields.niche;
+      return next;
+    });
+    setKols(updated);
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(updated.filter((k) => !demoKols.find((d) => d.id === k.id))));
+    setShowBatchEdit(false);
+    setBatchEditFields({ status: "", priority: "", type: "", source: "", niche: "" });
+    setSelectedIds(new Set());
   };
 
   return (
@@ -160,6 +180,9 @@ export default function KOLDiscovery() {
             <span className="text-sm font-medium">{selectedIds.size} selected</span>
           </div>
           <div className="flex items-center gap-2">
+            <button onClick={() => setShowBatchEdit(true)} className="px-3 py-1.5 bg-blue-600 text-white rounded-lg text-xs font-medium hover:bg-blue-700 transition-colors flex items-center gap-1">
+              <Edit3 className="w-3 h-3" /> Batch Edit
+            </button>
             <button onClick={() => setShowBatchPanel(true)} className="px-3 py-1.5 bg-[var(--primary)] text-white rounded-lg text-xs font-medium hover:bg-[var(--primary-hover)] transition-colors flex items-center gap-1">
               <Send className="w-3 h-3" /> Batch Outreach
             </button>
@@ -182,6 +205,62 @@ export default function KOLDiscovery() {
                   {s} <ChevronRight className="w-4 h-4" />
                 </button>
               ))}
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Batch Edit Modal */}
+      {showBatchEdit && (
+        <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-[9999]">
+          <div className="bg-[var(--card-bg)] rounded-xl p-6 w-full max-w-md mx-4">
+            <div className="flex items-center justify-between mb-5">
+              <h2 className="text-lg font-semibold">Batch Edit — {selectedIds.size} contacts</h2>
+              <button onClick={() => { setShowBatchEdit(false); setBatchEditFields({ status: "", priority: "", type: "", source: "", niche: "" }); }} className="text-[var(--muted)] hover:text-[var(--foreground)]"><X className="w-5 h-5" /></button>
+            </div>
+            <p className="text-xs text-[var(--muted)] mb-4">Only fill in the fields you want to update. Empty fields will be kept unchanged.</p>
+            <div className="space-y-3">
+              <div>
+                <label className="block text-xs font-medium text-[var(--muted)] mb-1">Status</label>
+                <select value={batchEditFields.status} onChange={(e) => setBatchEditFields({ ...batchEditFields, status: e.target.value })}
+                  className="w-full px-3 py-2 bg-[var(--card-bg)] border border-[var(--card-border)] rounded-lg text-sm focus:outline-none focus:border-[var(--primary)]/50">
+                  <option value="">— Keep current —</option>
+                  {OUTREACH_STATUS.map((s) => <option key={s} value={s}>{s}</option>)}
+                </select>
+              </div>
+              <div>
+                <label className="block text-xs font-medium text-[var(--muted)] mb-1">Priority</label>
+                <select value={batchEditFields.priority} onChange={(e) => setBatchEditFields({ ...batchEditFields, priority: e.target.value })}
+                  className="w-full px-3 py-2 bg-[var(--card-bg)] border border-[var(--card-border)] rounded-lg text-sm focus:outline-none focus:border-[var(--primary)]/50">
+                  <option value="">— Keep current —</option>
+                  <option value="Critical">Critical</option><option value="High">High</option>
+                  <option value="Medium">Medium</option><option value="Low">Low</option>
+                </select>
+              </div>
+              <div>
+                <label className="block text-xs font-medium text-[var(--muted)] mb-1">Type</label>
+                <select value={batchEditFields.type} onChange={(e) => setBatchEditFields({ ...batchEditFields, type: e.target.value })}
+                  className="w-full px-3 py-2 bg-[var(--card-bg)] border border-[var(--card-border)] rounded-lg text-sm focus:outline-none focus:border-[var(--primary)]/50">
+                  <option value="">— Keep current —</option>
+                  {CONTACT_TYPES.map((t) => <option key={t} value={t}>{t}</option>)}
+                </select>
+              </div>
+              <div>
+                <label className="block text-xs font-medium text-[var(--muted)] mb-1">Source</label>
+                <input type="text" value={batchEditFields.source} onChange={(e) => setBatchEditFields({ ...batchEditFields, source: e.target.value })} placeholder="e.g. 巴西光伏电工协会名单"
+                  className="w-full px-3 py-2 bg-[var(--card-bg)] border border-[var(--card-border)] rounded-lg text-sm focus:outline-none focus:border-[var(--primary)]/50" />
+              </div>
+              <div>
+                <label className="block text-xs font-medium text-[var(--muted)] mb-1">Niche</label>
+                <input type="text" value={batchEditFields.niche} onChange={(e) => setBatchEditFields({ ...batchEditFields, niche: e.target.value })} placeholder="e.g. Solar Energy"
+                  className="w-full px-3 py-2 bg-[var(--card-bg)] border border-[var(--card-border)] rounded-lg text-sm focus:outline-none focus:border-[var(--primary)]/50" />
+              </div>
+            </div>
+            <div className="flex justify-end gap-3 mt-6">
+              <button onClick={() => { setShowBatchEdit(false); setBatchEditFields({ status: "", priority: "", type: "", source: "", niche: "" }); }} className="px-4 py-2 border border-[var(--card-border)] rounded-lg text-sm font-medium hover:bg-gray-50 transition-colors">Cancel</button>
+              <button onClick={saveBatchEdit} className="px-4 py-2 bg-blue-600 text-white rounded-lg text-sm font-medium hover:bg-blue-700 transition-colors flex items-center gap-1.5">
+                <Save className="w-3.5 h-3.5" /> Apply to {selectedIds.size} contacts
+              </button>
             </div>
           </div>
         </div>
