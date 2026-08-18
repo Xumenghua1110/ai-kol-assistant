@@ -464,6 +464,10 @@ export default function EmailGenerator() {
     navigator.clipboard.writeText(content);
   };
 
+  const updateBatchResult = (idx: number, content: string) => {
+    setBatchResults((prev) => prev.map((r, i) => i === idx ? { ...r, content } : r));
+  };
+
   const sendBatchEmail = (r: BatchResult) => {
     const subjectLine = r.content.match(/^(Subject|Asunto|Assunto|主题[：:])\s*(.+)/i);
     const subject = subjectLine ? subjectLine[2].trim() : `Collaboration — Ktech Solar x ${r.kolName}`;
@@ -659,7 +663,8 @@ export default function EmailGenerator() {
                   <p className="text-blue-700">From: {senderEmail}</p>
                 </div>
               )}
-              <pre className="whitespace-pre-wrap text-sm leading-relaxed font-sans">{result}</pre>
+              <textarea value={result} onChange={(e) => setResult(e.target.value)} rows={15}
+                className="w-full px-4 py-3 bg-[var(--background)] border border-[var(--card-border)] rounded-lg text-sm leading-relaxed font-sans focus:outline-none focus:border-[var(--primary)]/50 resize-y" />
             </div>
           )}
 
@@ -828,7 +833,8 @@ export default function EmailGenerator() {
                       <span className="font-medium text-blue-900">To: </span><span className="text-blue-700">{r.to}</span>
                     </div>
                   )}
-                  <pre className="whitespace-pre-wrap text-sm leading-relaxed font-sans text-[var(--muted)]">{r.content}</pre>
+                  <textarea value={r.content} onChange={(e) => updateBatchResult(idx, e.target.value)} rows={12}
+                    className="w-full px-4 py-3 bg-[var(--background)] border border-[var(--card-border)] rounded-lg text-sm leading-relaxed font-sans focus:outline-none focus:border-[var(--primary)]/50 resize-y" />
                 </div>
               ))}
             </div>
