@@ -1,8 +1,12 @@
-import { ArrowLeft, Video, Camera, Globe, Mail, Sparkles, TrendingUp, Users, Target, AlertTriangle, Lightbulb } from "lucide-react";
+import { ArrowLeft, Video, Camera, Globe, Mail, Sparkles, TrendingUp, Users, Target, AlertTriangle, Lightbulb, Building2, ExternalLink, Globe as GlobeIcon, Megaphone, Truck, Wrench, HelpCircle } from "lucide-react";
 import Link from "next/link";
 import { demoKols, getKolById } from "@/lib/demoData";
 
-const platformIcons: Record<string, typeof Video> = { YouTube: Video, Instagram: Camera, TikTok: Globe };
+const typeIcons: Record<string, typeof Users> = {
+  KOL: Users, Association: Building2, Media: Megaphone, Distributor: Truck, Installer: Wrench, Other: HelpCircle,
+};
+
+const platformIcons: Record<string, typeof Video> = { YouTube: Video, Instagram: Camera, TikTok: Globe, Website: GlobeIcon };
 
 export function generateStaticParams() {
   return demoKols.map((kol) => ({ id: kol.id }));
@@ -15,16 +19,17 @@ export default function KOLDetail({ params }: { params: { id: string } }) {
     return (
       <div className="p-8 max-w-4xl">
         <Link href="/kols" className="inline-flex items-center gap-1.5 text-sm text-[var(--muted)] hover:text-[var(--foreground)] mb-6 transition-colors">
-          <ArrowLeft className="w-4 h-4" /> Back to KOLs
+          <ArrowLeft className="w-4 h-4" /> Back to Contacts
         </Link>
         <div className="bg-[var(--card-bg)] border border-[var(--card-border)] rounded-xl p-12 text-center">
-          <p className="text-[var(--muted)]">KOL not found.</p>
+          <p className="text-[var(--muted)]">Contact not found.</p>
         </div>
       </div>
     );
   }
 
   const PlatformIcon = platformIcons[kol.platform] || Globe;
+  const TypeIcon = typeIcons[kol.type] || Users;
   const latestAnalysis = kol.analyses?.[0] || null;
   const recommendations = latestAnalysis?.recommendations ? JSON.parse(latestAnalysis.recommendations) : [];
   const riskFactors = latestAnalysis?.riskFactors ? JSON.parse(latestAnalysis.riskFactors) : [];
@@ -32,7 +37,7 @@ export default function KOLDetail({ params }: { params: { id: string } }) {
   return (
     <div className="p-8 max-w-4xl">
       <Link href="/kols" className="inline-flex items-center gap-1.5 text-sm text-[var(--muted)] hover:text-[var(--foreground)] mb-6 transition-colors">
-        <ArrowLeft className="w-4 h-4" /> Back to KOLs
+        <ArrowLeft className="w-4 h-4" /> Back to Contacts
       </Link>
 
       <div className="bg-[var(--card-bg)] border border-[var(--card-border)] rounded-xl p-6 mb-6">
@@ -42,10 +47,15 @@ export default function KOLDetail({ params }: { params: { id: string } }) {
               <PlatformIcon className="w-7 h-7 text-red-500" />
             </div>
             <div>
-              <h1 className="text-xl font-bold">{kol.name}</h1>
+              <div className="flex items-center gap-2 flex-wrap">
+                <h1 className="text-xl font-bold">{kol.name}</h1>
+                <span className="px-2 py-0.5 rounded-full text-xs font-medium bg-purple-100 text-purple-700 flex items-center gap-1">
+                  <TypeIcon className="w-3 h-3" />{kol.type}
+                </span>
+              </div>
               <p className="text-[var(--muted)] mt-0.5">{kol.platform} · {kol.niche || "No niche"} · {kol.region || "No region"}</p>
               <p className="text-sm text-[var(--primary)] mt-1">
-                {kol.followers > 0 ? `${(kol.followers / 1000).toFixed(0)}K followers` : "No follower data"}
+                {kol.followers > 0 ? `${(kol.followers / 1000).toFixed(0)}K followers` : kol.website ? "Organization" : "No follower data"}
               </p>
             </div>
           </div>
@@ -53,6 +63,44 @@ export default function KOLDetail({ params }: { params: { id: string } }) {
             <Mail className="w-4 h-4" /> Generate Email
           </Link>
         </div>
+
+        <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mt-5 pt-5 border-t border-[var(--card-border)]">
+          {kol.source && (
+            <div>
+              <p className="text-xs text-[var(--muted)] mb-1">Source</p>
+              <p className="text-sm font-medium">{kol.source}</p>
+            </div>
+          )}
+          {kol.website && (
+            <div>
+              <p className="text-xs text-[var(--muted)] mb-1">Website</p>
+              <a href={kol.website} target="_blank" rel="noopener noreferrer" className="text-sm font-medium text-[var(--primary)] hover:underline flex items-center gap-1">
+                {kol.website.replace(/^https?:\/\//, "").slice(0, 30)}... <ExternalLink className="w-3 h-3" />
+              </a>
+            </div>
+          )}
+          {kol.contactPerson && (
+            <div>
+              <p className="text-xs text-[var(--muted)] mb-1">Contact Person</p>
+              <p className="text-sm font-medium">{kol.contactPerson}</p>
+            </div>
+          )}
+          <div>
+            <p className="text-xs text-[var(--muted)] mb-1">Status</p>
+            <p className="text-sm font-medium">{kol.status}</p>
+          </div>
+        </div>
+
+        {(kol.contactInfo.emails.length > 0 || kol.contactInfo.phones.length > 0) && (
+          <div className="mt-4 pt-4 border-t border-[var(--card-border)] flex flex-wrap gap-4">
+            {kol.contactInfo.emails.map((e) => (
+              <a key={e} href={`mailto:${e}`} className="text-sm text-[var(--primary)] hover:underline flex items-center gap-1"><Mail className="w-3 h-3" />{e}</a>
+            ))}
+            {kol.contactInfo.phones.map((p) => (
+              <span key={p} className="text-sm text-[var(--muted)] flex items-center gap-1"><GlobeIcon className="w-3 h-3" />{p}</span>
+            ))}
+          </div>
+        )}
       </div>
 
       {latestAnalysis ? (

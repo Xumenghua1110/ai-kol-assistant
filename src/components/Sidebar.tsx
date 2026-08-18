@@ -8,12 +8,16 @@ import {
   Mail,
   BarChart3,
   Zap,
+  Upload,
+  Send,
 } from "lucide-react";
 
 const navigation = [
   { name: "Dashboard", href: "/", icon: LayoutDashboard },
-  { name: "KOL Discovery", href: "/kols", icon: Users },
-  { name: "Email Generator", href: "/email", icon: Mail },
+  { name: "Contacts", href: "/kols", icon: Users },
+  { name: "Import", href: "/import", icon: Upload },
+  { name: "Outreach", href: "/email", icon: Mail },
+  { name: "Sent", href: "/sent", icon: Send },
   { name: "Campaigns", href: "/campaigns", icon: BarChart3 },
 ];
 
