@@ -28,7 +28,7 @@ const statsData = [
     value: stats.emailCount.toString(),
     icon: MessageSquare,
     change: `${stats.emailCount} messages created`,
-    link: "/email",
+    link: "/sent",
   },
   {
     label: "Messages Sent",
