@@ -1,25 +1,14 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import {
   BarChart3,
-  Mail,
   Clock,
   CheckCircle2,
-  AlertCircle,
-  Users,
-  TrendingUp,
   Plus,
   X,
 } from "lucide-react";
-
-interface Campaign {
-  id: string;
-  name: string;
-  status: string;
-  notes: string | null;
-  createdAt: string;
-}
+import { demoCampaigns, type Campaign } from "@/lib/demoData";
 
 const statusConfig: Record<
   string,
@@ -31,8 +20,7 @@ const statusConfig: Record<
 };
 
 export default function Campaigns() {
-  const [campaigns, setCampaigns] = useState<Campaign[]>([]);
-  const [loading, setLoading] = useState(true);
+  const [campaigns, setCampaigns] = useState<Campaign[]>(demoCampaigns);
   const [activeTab, setActiveTab] = useState<"all" | "active" | "completed">(
     "all"
   );
@@ -42,39 +30,19 @@ export default function Campaigns() {
     status: "Planning",
     notes: "",
   });
-  const [submitting, setSubmitting] = useState(false);
 
-  useEffect(() => {
-    fetchCampaigns();
-  }, []);
-
-  const fetchCampaigns = () => {
-    fetch("/api/campaigns")
-      .then((res) => res.json())
-      .then((data) => {
-        setCampaigns(data);
-        setLoading(false);
-      })
-      .catch(() => setLoading(false));
-  };
-
-  const handleCreateCampaign = async () => {
-    setSubmitting(true);
-    try {
-      const res = await fetch("/api/campaigns", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(newCampaign),
-      });
-      if (res.ok) {
-        fetchCampaigns();
-        setShowNewModal(false);
-        setNewCampaign({ name: "", status: "Planning", notes: "" });
-      }
-    } catch (error) {
-      console.error("Failed to create campaign:", error);
-    }
-    setSubmitting(false);
+  const handleCreateCampaign = () => {
+    if (!newCampaign.name) return;
+    const campaign: Campaign = {
+      id: "c-" + Date.now(),
+      name: newCampaign.name,
+      status: newCampaign.status,
+      notes: newCampaign.notes || null,
+      createdAt: new Date().toISOString(),
+    };
+    setCampaigns([campaign, ...campaigns]);
+    setShowNewModal(false);
+    setNewCampaign({ name: "", status: "Planning", notes: "" });
   };
 
   const filteredCampaigns =
@@ -86,19 +54,8 @@ export default function Campaigns() {
             : c.status === "Completed"
         );
 
-  if (loading) {
-    return (
-      <div className="p-8 max-w-6xl">
-        <div className="flex items-center justify-center h-64">
-          <p className="text-[var(--muted)]">Loading campaigns...</p>
-        </div>
-      </div>
-    );
-  }
-
   return (
     <div className="p-8 max-w-6xl">
-      {/* Header */}
       <div className="flex items-center justify-between mb-6">
         <div>
           <h1 className="text-2xl font-bold">Campaigns</h1>
@@ -115,7 +72,6 @@ export default function Campaigns() {
         </button>
       </div>
 
-      {/* Empty State */}
       {campaigns.length === 0 ? (
         <div className="bg-[var(--card-bg)] border border-[var(--card-border)] rounded-xl p-12 text-center">
           <BarChart3 className="w-12 h-12 text-[var(--muted)] mx-auto mb-3 opacity-40" />
@@ -131,7 +87,6 @@ export default function Campaigns() {
         </div>
       ) : (
         <>
-          {/* Tabs */}
           <div className="flex gap-1 mb-4 bg-gray-100 rounded-lg p-1 w-fit">
             {(["all", "active", "completed"] as const).map((tab) => (
               <button
@@ -148,11 +103,10 @@ export default function Campaigns() {
             ))}
           </div>
 
-          {/* Campaign List */}
           <div className="space-y-3">
             {filteredCampaigns.map((campaign) => {
               const config = statusConfig[campaign.status];
-              const StatusIcon = config.icon;
+              const StatusIcon = config?.icon || CheckCircle2;
 
               return (
                 <div
@@ -174,7 +128,7 @@ export default function Campaigns() {
                     </div>
                     <div className="flex items-center gap-4">
                       <span
-                        className={`flex items-center gap-1 px-2.5 py-1 rounded-full text-xs font-medium ${config.color}`}
+                        className={`flex items-center gap-1 px-2.5 py-1 rounded-full text-xs font-medium ${config?.color || "bg-gray-100 text-gray-600"}`}
                       >
                         <StatusIcon className="w-3 h-3" />
                         {campaign.status}
@@ -188,7 +142,6 @@ export default function Campaigns() {
         </>
       )}
 
-      {/* New Campaign Modal */}
       {showNewModal && (
         <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-[9999]">
           <div className="bg-[var(--card-bg)] rounded-xl p-6 w-full max-w-md mx-4">
@@ -258,10 +211,10 @@ export default function Campaigns() {
                 </button>
                 <button
                   onClick={handleCreateCampaign}
-                  disabled={submitting || !newCampaign.name}
+                  disabled={!newCampaign.name}
                   className="flex-1 px-4 py-2.5 bg-[var(--primary)] text-white rounded-lg text-sm font-medium hover:bg-[var(--primary-hover)] transition-colors disabled:opacity-50"
                 >
-                  {submitting ? "Creating..." : "Create Campaign"}
+                  Create Campaign
                 </button>
               </div>
             </div>

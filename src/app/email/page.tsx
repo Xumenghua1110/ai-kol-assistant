@@ -1,6 +1,7 @@
 "use client";
 import { useEffect, useState, useRef } from "react";
 import { Sparkles, Send, Copy, Check, Mail, X, Globe, ExternalLink, MessageCircle, Camera, Phone, ChevronDown } from "lucide-react";
+import { demoKols } from "@/lib/demoData";
 
 const languageMap: Record<string, string> = {
   "葡语": "Portuguese", "西语": "Spanish", "英语": "English", "中文": "Chinese",
@@ -60,7 +61,7 @@ const contactColor = (type: string) => {
 };
 
 export default function EmailGenerator() {
-  const [kols, setKols] = useState<any[]>([]);
+  const [kols] = useState<any[]>(demoKols);
   const [selectedKol, setSelectedKol] = useState("");
   const [language, setLanguage] = useState("English");
   const [cooperationType, setCooperationType] = useState("gift");
@@ -78,8 +79,6 @@ export default function EmailGenerator() {
   const [kolSearch, setKolSearch] = useState("");
   const [generatedEmailId, setGeneratedEmailId] = useState("");
   const dropdownRef = useRef<HTMLDivElement>(null);
-
-  useEffect(() => { fetch("/api/kols").then(r => r.json()).then(setKols).catch(() => {}); }, []);
 
   // Close dropdown when clicking outside
   useEffect(() => {
@@ -117,6 +116,123 @@ export default function EmailGenerator() {
     }
   };
 
+  const generateStaticContent = (kol: any, channel: string) => {
+    const kolName = kol?.name || "Creator";
+    const niche = kol?.niche || "solar energy";
+    const region = kol?.region || "your region";
+    const platform = kol?.platform || "YouTube";
+
+    const templates: Record<string, Record<string, string>> = {
+      English: {
+        email: `Subject: Collaboration Opportunity — Ktech Solar x ${kolName}
+
+Hi ${kolName} team,
+
+I've been following your ${platform} channel and really impressed by your ${niche} content. Your authentic approach to ${niche.toLowerCase()} in ${region} is exactly what we look for in a partner.
+
+I'm Eaea from Ktech Solar — we manufacture hybrid and off-grid solar inverters with integrated MPPT and IP65 protection. We're expanding our presence in ${region} and believe your audience would genuinely benefit from our products.
+
+We'd love to send you our latest hybrid inverter for an honest review. No scripts, no constraints — just your authentic take.
+
+Would you be open to a quick chat about collaboration?
+
+Best regards,
+Eaea | Ktech Solar
+WhatsApp: +86-18914111136
+https://www.ktechsolar.com/`,
+        whatsapp: `Hi ${kolName}! 👋
+
+I'm Eaea from Ktech Solar. Love your ${niche} content on ${platform}!
+
+We make hybrid solar inverters and think your audience in ${region} would really benefit. Would love to send you one for an honest review — no strings attached.
+
+Interested in a quick chat? 🌞`,
+        instagram: `Hey ${kolName}! Love your solar content 🔆 We'd love to collab — DM open for details!`,
+      },
+      Portuguese: {
+        email: `Assunto: Proposta de Parceria — Ktech Solar x ${kolName}
+
+Olá equipe ${kolName},
+
+Acompanho seu canal no ${platform} e fico impressionado com seu conteúdo sobre ${niche}. Sua abordagem autêntica para ${niche.toLowerCase()} na ${region} é exatamente o que procuramos em um parceiro.
+
+Sou Eaea da Ktech Solar — fabricamos inversores solares híbridos e off-grid com MPPT integrado e proteção IP65. Estamos expandindo nossa presença na ${region} e acreditamos que seu público se beneficiaria genuinamente dos nossos produtos.
+
+Gostaríamos de enviar nosso mais recente inversor híbrido para uma avaliação honesta. Sem scripts, sem restrições — apenas sua opinião autêntica.
+
+Toparia um bate-papo rápido sobre colaboração?
+
+Abraços,
+Eaea | Ktech Solar
+WhatsApp: +86-18914111136
+https://www.ktechsolar.com/`,
+        whatsapp: `Oi ${kolName}! 👋
+
+Sou Eaea da Ktech Solar. Adoro seu conteúdo sobre ${niche} no ${platform}!
+
+Fabricamos inversores solares híbridos e achamos que seu público na ${region} ia gostar. Queríamos te enviar um para avaliação — sem compromisso.
+
+Bora conversar? 🌞`,
+        instagram: `Oi ${kolName}! Adorei seu conteúdo solar 🔆 Queremos colaborar — DM aberto!`,
+      },
+      Spanish: {
+        email: `Asunto: Propuesta de Colaboración — Ktech Solar x ${kolName}
+
+Hola equipo de ${kolName},
+
+He seguido tu canal en ${platform} y me impresiona mucho tu contenido sobre ${niche}. Tu enfoque auténtico de ${niche.toLowerCase()} en ${region} es exactamente lo que buscamos en un socio.
+
+Soy Eaea de Ktech Solar — fabricamos inversores solares híbridos y off-grid con MPPT integrado y protección IP65. Estamos expandiendo nuestra presencia en ${region} y creemos que tu audiencia se beneficiaría genuinamente de nuestros productos.
+
+Nos encantaría enviarte nuestro último inversor híbrido para una revisión honesta. Sin guiones, sin restricciones — solo tu opinión auténtica.
+
+¿Te gustaría charlar brevemente sobre una colaboración?
+
+Saludos,
+Eaea | Ktech Solar
+WhatsApp: +86-18914111136
+https://www.ktechsolar.com/`,
+        whatsapp: `¡Hola ${kolName}! 👋
+
+Soy Eaea de Ktech Solar. ¡Me encanta tu contenido sobre ${niche} en ${platform}!
+
+Fabricamos inversores solares híbridos y creemos que tu audiencia en ${region} lo disfrutaría. Nos gustaría enviarte uno para una revisión honesta — sin compromiso.
+
+¿Charlamos? 🌞`,
+        instagram: `¡Hola ${kolName}! Me encantó tu contenido solar 🔆 ¡Queremos colaborar — DM abierto!`,
+      },
+      Chinese: {
+        email: `主题：合作邀约 — Ktech Solar x ${kolName}
+
+${kolName}团队你们好，
+
+我一直在关注你们的${platform}频道，对你们的${niche}内容印象深刻。你们在${region}对${niche.toLowerCase()}的真实态度正是我们寻找合作伙伴的标准。
+
+我是Ktech Solar的Eaea——我们生产带集成MPPT和IP65防护的混合和离网太阳能逆变器。我们正在拓展${region}市场，相信你们的受众会真正受益于我们的产品。
+
+我们想寄给你们最新的混合逆变器进行真实评测。没有脚本，没有约束——只需要你们的真实反馈。
+
+方便简单聊聊合作吗？
+
+此致，
+Eaea | Ktech Solar
+WhatsApp: +86-18914111136
+https://www.ktechsolar.com/`,
+        whatsapp: `你好${kolName}！👋
+
+我是Ktech Solar的Eaea，很喜欢你在${platform}上的${niche}内容！
+
+我们做混合太阳能逆变器，觉得${region}的受众会感兴趣。想寄一台给你做真实评测——无任何附加条件。
+
+有兴趣聊聊吗？🌞`,
+        instagram: `嗨${kolName}！喜欢你的太阳能内容 🔆 想合作——DM详聊！`,
+      },
+    };
+
+    const langTemplates = templates[language] || templates["English"];
+    return langTemplates[channel] || langTemplates["email"];
+  };
+
   const handleGenerate = async () => {
     if (!selectedKol) return;
     setGenerating(true);
@@ -125,34 +241,14 @@ export default function EmailGenerator() {
     try {
       const kol = kols.find(k => k.id === selectedKol);
       const channel = selectedChannel || "email";
-      const res = await fetch("/api/emails", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          kolId: selectedKol,
-          kolName: kol?.name || "",
-          kolProfile: kol?.notes || "",
-          language,
-          cooperationType,
-          brandInfo,
-          tone,
-          channel,
-        }),
-      });
-      const data = await res.json();
-      if (data.error) {
-        setGenerationError(true);
-        setResult("");
-        alert("Failed to generate: " + data.error);
-      } else {
-        setResult(data.body || data.content || "");
-        setGeneratedEmailId(data.id || "");
-        setGenerationError(false);
-      }
+      await new Promise(r => setTimeout(r, 800));
+      const content = generateStaticContent(kol, channel);
+      setResult(content);
+      setGeneratedEmailId("demo-" + Date.now());
+      setGenerationError(false);
     } catch {
       setGenerationError(true);
       setResult("");
-      alert("Error generating. Please check your connection.");
     }
     setGenerating(false);
   };
@@ -187,20 +283,6 @@ export default function EmailGenerator() {
     setShowSendModal(true);
   };
 
-  // Mark the generated message as "Sent" in the database
-  const markAsSent = async () => {
-    if (!generatedEmailId || generatedEmailId.startsWith("temp-")) return;
-    try {
-      await fetch("/api/emails", {
-        method: "PATCH",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ id: generatedEmailId, status: "Sent" }),
-      });
-    } catch {
-      // Silently fail — don't block the send action
-    }
-  };
-
   // --- Send via different channels ---
   const openFoxmail = () => {
     const { to, subject, body } = getEmailData();
@@ -221,7 +303,6 @@ export default function EmailGenerator() {
     link.click();
     document.body.removeChild(link);
     setShowSendModal(false);
-    markAsSent();
   };
 
   const openWhatsApp = () => {
@@ -233,7 +314,6 @@ export default function EmailGenerator() {
     const msg = encodeURIComponent(result);
     window.open(`https://wa.me/${phone}?text=${msg}`, "_blank");
     setShowSendModal(false);
-    markAsSent();
   };
 
   const openInstagram = () => {
@@ -246,7 +326,6 @@ export default function EmailGenerator() {
     navigator.clipboard.writeText(result).catch(() => {});
     window.open(`https://www.instagram.com/${username}/`, "_blank");
     setShowSendModal(false);
-    markAsSent();
     setTimeout(() => {
       alert("Instagram profile opened. Message copied to clipboard — paste it (Ctrl+V) in the DM chat.");
     }, 1000);
