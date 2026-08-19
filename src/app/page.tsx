@@ -1,5 +1,6 @@
 "use client";
 
+import { useState, useEffect } from "react";
 import {
   Users,
   MessageSquare,
@@ -13,46 +14,50 @@ import {
 import Link from "next/link";
 import { getDashboardStats } from "@/lib/demoData";
 
-const stats = getDashboardStats();
-
-const statsData = [
-  {
-    label: "KOLs Tracked",
-    value: stats.kolCount.toString(),
-    icon: Users,
-    change: `${stats.kolCount} KOLs in database`,
-    link: "/kols",
-  },
-  {
-    label: "Messages Generated",
-    value: stats.emailCount.toString(),
-    icon: MessageSquare,
-    change: `${stats.emailCount} messages created`,
-    link: "/sent",
-  },
-  {
-    label: "Messages Sent",
-    value: stats.sentEmails.toString(),
-    icon: Send,
-    change: `${stats.sentEmails} sent`,
-    link: "/sent",
-  },
-  {
-    label: "Response Rate",
-    value: `${stats.responseRate}%`,
-    icon: TrendingUp,
-    change: `${stats.repliedEmails} replies`,
-    link: null,
-  },
-];
-
 export default function Dashboard() {
+  const [stats, setStats] = useState(() => getDashboardStats());
+
+  useEffect(() => {
+    setStats(getDashboardStats());
+  }, []);
+
+  const statsData = [
+    {
+      label: "Contacts Tracked",
+      value: stats.kolCount.toString(),
+      icon: Users,
+      change: `${stats.kolCount} contacts in database`,
+      link: "/kols",
+    },
+    {
+      label: "Messages Generated",
+      value: stats.emailCount.toString(),
+      icon: MessageSquare,
+      change: `${stats.emailCount} messages created`,
+      link: "/sent",
+    },
+    {
+      label: "Messages Sent",
+      value: stats.sentEmails.toString(),
+      icon: Send,
+      change: `${stats.sentEmails} sent`,
+      link: "/sent",
+    },
+    {
+      label: "Response Rate",
+      value: `${stats.responseRate}%`,
+      icon: TrendingUp,
+      change: `${stats.repliedEmails} replies`,
+      link: null,
+    },
+  ];
+
   return (
     <div className="p-8 max-w-6xl">
       <div className="mb-8">
         <h1 className="text-2xl font-bold text-[var(--foreground)]">Dashboard</h1>
         <p className="text-[var(--muted)] mt-1">
-          Welcome to AI KOL Outreach Assistant — your AI-powered KOL management toolkit.
+          Welcome to AI Solar Connect — your AI-powered solar outreach toolkit.
         </p>
       </div>
 
@@ -91,9 +96,9 @@ export default function Dashboard() {
               <Users className="w-5 h-5" />
             </div>
             <h3 className="font-medium text-[var(--foreground)] flex items-center gap-2">
-              Add a KOL <ArrowRight className="w-4 h-4 opacity-0 group-hover:opacity-100 transition-opacity" />
+              Add a Contact <ArrowRight className="w-4 h-4 opacity-0 group-hover:opacity-100 transition-opacity" />
             </h3>
-            <p className="text-sm text-[var(--muted)] mt-1">Import a KOL by their social media profile URL</p>
+            <p className="text-sm text-[var(--muted)] mt-1">Import a contact by their social media profile URL</p>
           </Link>
           <Link href="/email" className="group bg-[var(--card-bg)] border border-[var(--card-border)] rounded-xl p-5 hover:border-[var(--primary)]/30 transition-all hover:shadow-sm">
             <div className="w-10 h-10 rounded-lg bg-purple-50 text-purple-600 flex items-center justify-center mb-3">
@@ -124,8 +129,8 @@ export default function Dashboard() {
           <div className="flex gap-3">
             <div className="w-8 h-8 rounded-full bg-blue-100 text-blue-600 flex items-center justify-center text-sm font-bold shrink-0">1</div>
             <div>
-              <h3 className="font-medium text-sm">Discover & Import KOLs</h3>
-              <p className="text-sm text-[var(--muted)] mt-1">Add KOLs from YouTube, Instagram, TikTok. AI analyzes their content style and audience.</p>
+              <h3 className="font-medium text-sm">Discover & Import Contacts</h3>
+              <p className="text-sm text-[var(--muted)] mt-1">Add contacts from YouTube, Instagram, TikTok. AI analyzes their content style and audience.</p>
             </div>
           </div>
           <div className="flex gap-3">

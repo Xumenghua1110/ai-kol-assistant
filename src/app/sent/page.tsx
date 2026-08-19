@@ -2,7 +2,7 @@
 import { useState } from "react";
 import { Send, Mail, Phone, Camera, ArrowLeft, ExternalLink, Copy, Check } from "lucide-react";
 import Link from "next/link";
-import { demoSentMessages, demoKols, type EmailRecord } from "@/lib/demoData";
+import { loadSentMessages, loadAllContacts, type EmailRecord, type Contact } from "@/lib/demoData";
 
 function getChannelType(msg: EmailRecord): string {
   return msg.channel || "email";
@@ -26,18 +26,18 @@ function getChannelLabel(type: string) {
   return "Email";
 }
 
-function getKolName(kolId: string | null): string {
-  if (!kolId) return "Unknown KOL";
-  return demoKols.find(k => k.id === kolId)?.name || "Unknown KOL";
+function getContactName(kolId: string | null): string {
+  if (!kolId) return "Unknown Contact";
+  return loadAllContacts().find(k => k.id === kolId)?.name || "Unknown Contact";
 }
 
-function getKolPlatform(kolId: string | null): string {
+function getContactPlatform(kolId: string | null): string {
   if (!kolId) return "Unknown";
-  return demoKols.find(k => k.id === kolId)?.platform || "Unknown";
+  return loadAllContacts().find(k => k.id === kolId)?.platform || "Unknown";
 }
 
 export default function SentMessages() {
-  const messages = demoSentMessages;
+  const [messages] = useState(() => loadSentMessages());
   const [filter, setFilter] = useState<"all" | "email" | "whatsapp" | "instagram">("all");
   const [expandedId, setExpandedId] = useState<string | null>(null);
   const [copiedId, setCopiedId] = useState<string | null>(null);
@@ -69,7 +69,7 @@ export default function SentMessages() {
         <h1 className="text-2xl font-bold flex items-center gap-2">
           <Send className="w-6 h-6 text-[var(--primary)]" /> Sent Messages
         </h1>
-        <p className="text-[var(--muted)] mt-1">{messages.length} message{messages.length !== 1 ? "s" : ""} sent to KOLs</p>
+        <p className="text-[var(--muted)] mt-1">{messages.length} message{messages.length !== 1 ? "s" : ""} sent to contacts</p>
       </div>
 
       <div className="flex gap-1 mb-5 bg-gray-100 rounded-lg p-1 w-fit">
@@ -93,8 +93,8 @@ export default function SentMessages() {
             const channel = getChannelType(msg);
             const isExpanded = expandedId === msg.id;
             const isCopied = copiedId === msg.id;
-            const kolName = getKolName(msg.kolId);
-            const kolPlatform = getKolPlatform(msg.kolId);
+            const kolName = getContactName(msg.kolId);
+            const kolPlatform = getContactPlatform(msg.kolId);
 
             return (
               <div key={msg.id} className="bg-[var(--card-bg)] border border-[var(--card-border)] rounded-xl overflow-hidden hover:border-[var(--primary)]/30 transition-all">
@@ -128,7 +128,7 @@ export default function SentMessages() {
                       <span>Platform: {kolPlatform}</span>
                       <span>Cooperation: {msg.cooperationType}</span>
                       <Link href={`/kols/${msg.kolId}`} className="flex items-center gap-1 text-[var(--primary)] hover:underline ml-auto" onClick={(e) => e.stopPropagation()}>
-                        View KOL Profile <ExternalLink className="w-3 h-3" />
+                        View Contact Profile <ExternalLink className="w-3 h-3" />
                       </Link>
                     </div>
                   </div>

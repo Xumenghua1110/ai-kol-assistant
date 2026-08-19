@@ -193,7 +193,7 @@ export default function Campaigns() {
                   Notes
                 </label>
                 <textarea
-                  placeholder="Campaign goals, target KOLs, timeline..."
+                  placeholder="Campaign goals, target contacts, timeline..."
                   rows={3}
                   value={newCampaign.notes}
                   onChange={(e) =>

@@ -1,6 +1,6 @@
 import { ArrowLeft, Video, Camera, Globe, Mail, Sparkles, TrendingUp, Users, Target, AlertTriangle, Lightbulb, Building2, ExternalLink, Globe as GlobeIcon, Megaphone, Truck, Wrench, HelpCircle } from "lucide-react";
 import Link from "next/link";
-import { demoKols, getKolById } from "@/lib/demoData";
+import { demoContacts, getContactById } from "@/lib/demoData";
 
 const typeIcons: Record<string, typeof Users> = {
   KOL: Users, Association: Building2, Media: Megaphone, Distributor: Truck, Installer: Wrench, Other: HelpCircle,
@@ -9,11 +9,11 @@ const typeIcons: Record<string, typeof Users> = {
 const platformIcons: Record<string, typeof Video> = { YouTube: Video, Instagram: Camera, TikTok: Globe, Website: GlobeIcon };
 
 export function generateStaticParams() {
-  return demoKols.map((kol) => ({ id: kol.id }));
+  return demoContacts.map((kol) => ({ id: kol.id }));
 }
 
 export default function KOLDetail({ params }: { params: { id: string } }) {
-  const kol = getKolById(params.id);
+  const kol = getContactById(params.id);
 
   if (!kol) {
     return (

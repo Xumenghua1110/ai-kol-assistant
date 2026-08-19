@@ -38,10 +38,10 @@ export default function Sidebar() {
         </div>
         <div>
           <h1 className="text-white text-sm font-semibold tracking-wide">
-            AI KOL Assistant
+            AI Solar Connect
           </h1>
           <p className="text-[var(--sidebar-text)] text-xs">
-            Outreach Powered by AI
+            Solar Outreach Powered by AI
           </p>
         </div>
       </div>

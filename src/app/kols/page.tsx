@@ -2,19 +2,19 @@
 import { useState, useEffect } from "react";
 import { Plus, Search, Video, Camera, Globe, ChevronRight, Users, Mail, X, CheckSquare, Square, Send, Building2, Megaphone, Truck, Wrench, HelpCircle, Edit3, Trash2, Save } from "lucide-react";
 import Link from "next/link";
-import { demoKols, CONTACT_TYPES, OUTREACH_STATUS, type KOL, type ContactType, type OutreachStatus } from "@/lib/demoData";
+import { demoContacts, CONTACT_TYPES, OUTREACH_STATUS, type Contact, type ContactType, type OutreachStatus } from "@/lib/demoData";
 
 const STORAGE_KEY = "kol_contacts";
 
-function loadContacts(): KOL[] {
-  if (typeof window === "undefined") return demoKols;
+function loadContacts(): Contact[] {
+  if (typeof window === "undefined") return demoContacts;
   try {
     const data = localStorage.getItem(STORAGE_KEY);
-    const stored: KOL[] = data ? JSON.parse(data) : [];
+    const stored: Contact[] = data ? JSON.parse(data) : [];
     const storedIds = new Set(stored.map((c) => c.id));
-    const newDemos = demoKols.filter((k) => !storedIds.has(k.id));
+    const newDemos = demoContacts.filter((k) => !storedIds.has(k.id));
     return [...stored, ...newDemos];
-  } catch { return demoKols; }
+  } catch { return demoContacts; }
 }
 
 const platformIcons: Record<string, typeof Video> = { YouTube: Video, Instagram: Camera, TikTok: Globe, Website: Globe };
@@ -43,7 +43,7 @@ const typeColors: Record<string, string> = {
 };
 
 export default function KOLDiscovery() {
-  const [kols, setKols] = useState<KOL[]>([]);
+  const [kols, setKols] = useState<Contact[]>([]);
   const [searchQuery, setSearchQuery] = useState("");
   const [typeFilter, setTypeFilter] = useState("");
   const [statusFilter, setStatusFilter] = useState("");
@@ -52,7 +52,7 @@ export default function KOLDiscovery() {
   const [selectedIds, setSelectedIds] = useState<Set<string>>(new Set());
   const [showBatchPanel, setShowBatchPanel] = useState(false);
   const [batchDeleteConfirm, setBatchDeleteConfirm] = useState(false);
-  const [editKol, setEditKol] = useState<KOL | null>(null);
+  const [editKol, setEditKol] = useState<Contact | null>(null);
   const [deleteConfirm, setDeleteConfirm] = useState<string | null>(null);
 
   useEffect(() => { setKols(loadContacts()); }, []);
@@ -86,7 +86,7 @@ export default function KOLDiscovery() {
   const updateStatus = (ids: string[], status: OutreachStatus) => {
     const updated = kols.map((k) => ids.includes(k.id) ? { ...k, status, updatedAt: new Date().toISOString() } : k);
     setKols(updated);
-    localStorage.setItem(STORAGE_KEY, JSON.stringify(updated.filter((k) => !demoKols.find((d) => d.id === k.id))));
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(updated.filter((k) => !demoContacts.find((d) => d.id === k.id))));
     setSelectedIds(new Set());
     setShowBatchPanel(false);
   };
@@ -95,21 +95,21 @@ export default function KOLDiscovery() {
     if (!editKol) return;
     const updated = kols.map((k) => k.id === editKol.id ? { ...editKol, updatedAt: new Date().toISOString() } : k);
     setKols(updated);
-    localStorage.setItem(STORAGE_KEY, JSON.stringify(updated.filter((k) => !demoKols.find((d) => d.id === k.id))));
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(updated.filter((k) => !demoContacts.find((d) => d.id === k.id))));
     setEditKol(null);
   };
 
   const deleteContact = (id: string) => {
     const updated = kols.filter((k) => k.id !== id);
     setKols(updated);
-    localStorage.setItem(STORAGE_KEY, JSON.stringify(updated.filter((k) => !demoKols.find((d) => d.id === k.id))));
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(updated.filter((k) => !demoContacts.find((d) => d.id === k.id))));
     setDeleteConfirm(null);
   };
 
   const batchDelete = () => {
     const updated = kols.filter((k) => !selectedIds.has(k.id));
     setKols(updated);
-    localStorage.setItem(STORAGE_KEY, JSON.stringify(updated.filter((k) => !demoKols.find((d) => d.id === k.id))));
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(updated.filter((k) => !demoContacts.find((d) => d.id === k.id))));
     setBatchDeleteConfirm(false);
     setSelectedIds(new Set());
   };
@@ -119,7 +119,7 @@ export default function KOLDiscovery() {
       <div className="flex items-center justify-between mb-6">
         <div>
           <h1 className="text-2xl font-bold">Contacts</h1>
-          <p className="text-[var(--muted)] mt-1">Manage KOLs, associations, media, distributors, and installers</p>
+          <p className="text-[var(--muted)] mt-1">Manage contacts, associations, media, distributors, and installers</p>
         </div>
         <div className="flex items-center gap-3">
           <Link href="/import" className="flex items-center gap-2 bg-green-600 text-white px-4 py-2.5 rounded-lg text-sm font-medium hover:bg-green-700 transition-colors">

@@ -4,7 +4,7 @@ export type ContactType = typeof CONTACT_TYPES[number];
 export const OUTREACH_STATUS = ["Not Contacted", "Sent", "Replied", "Meeting", "Declined"] as const;
 export type OutreachStatus = typeof OUTREACH_STATUS[number];
 
-export interface KOL {
+export interface Contact {
   id: string;
   name: string;
   type: ContactType;
@@ -67,7 +67,7 @@ export interface Campaign {
   createdAt: string;
 }
 
-export const demoKols: KOL[] = [
+export const demoContacts: Contact[] = [
   {
     id: "1",
     name: "Energia Solar Master",
@@ -494,7 +494,7 @@ export const demoKols: KOL[] = [
 ];
 
 export const demoCampaigns: Campaign[] = [
-  { id: "c1", name: "Brazil Solar Launch Q3", status: "Active", notes: "Targeting Brazilian solar KOLs for product launch", createdAt: "2026-07-15T00:00:00Z" },
+  { id: "c1", name: "Brazil Solar Launch Q3", status: "Active", notes: "Targeting Brazilian solar contacts for product launch", createdAt: "2026-07-15T00:00:00Z" },
   { id: "c2", name: "Latin America Expansion", status: "Planning", notes: "Expanding outreach to Mexico, Argentina, Colombia", createdAt: "2026-08-01T00:00:00Z" },
   { id: "c3", name: "US Market Pilot", status: "Completed", notes: "Initial outreach to US-based solar influencers", createdAt: "2026-06-01T00:00:00Z" },
 ];
@@ -507,18 +507,64 @@ export const demoSentMessages: EmailRecord[] = [
   { id: "e11", subject: "Product Review Opportunity", body: "Hi Solar Power Daily team,\n\nYour channel is the gold standard...", language: "English", status: "Sent", channel: "email", cooperationType: "paid", kolId: "11", createdAt: "2026-08-10T00:00:00Z" },
 ];
 
+const SENT_MESSAGES_KEY = "sent_messages";
+
+export function loadAllContacts(): Contact[] {
+  if (typeof window === "undefined") return demoContacts;
+  try {
+    const data = localStorage.getItem("kol_contacts");
+    const stored: Contact[] = data ? JSON.parse(data) : [];
+    const storedIds = new Set(stored.map((c) => c.id));
+    const newDemos = demoContacts.filter((k) => !storedIds.has(k.id));
+    return [...stored, ...newDemos];
+  } catch { return demoContacts; }
+}
+
+export function loadSentMessages(): EmailRecord[] {
+  if (typeof window === "undefined") return demoSentMessages;
+  try {
+    const data = localStorage.getItem(SENT_MESSAGES_KEY);
+    const stored: EmailRecord[] = data ? JSON.parse(data) : [];
+    if (stored.length > 0) return stored;
+    return demoSentMessages;
+  } catch { return demoSentMessages; }
+}
+
+export function saveSentMessage(msg: EmailRecord) {
+  if (typeof window === "undefined") return;
+  const existing = loadSentMessages();
+  if (existing.find((m) => m.id === msg.id)) return;
+  const updated = [...existing, msg];
+  localStorage.setItem(SENT_MESSAGES_KEY, JSON.stringify(updated));
+}
+
+export function updateContactStatus(contactId: string, status: OutreachStatus) {
+  if (typeof window === "undefined") return;
+  try {
+    const data = localStorage.getItem("kol_contacts");
+    const stored: Contact[] = data ? JSON.parse(data) : [];
+    const updated = stored.map((c) => c.id === contactId ? { ...c, status, updatedAt: new Date().toISOString() } : c);
+    localStorage.setItem("kol_contacts", JSON.stringify(updated));
+  } catch {}
+}
+
 export function getDashboardStats() {
+  const contacts = loadAllContacts();
+  const sentMessages = loadSentMessages();
+  const repliedCount = contacts.filter((c) => c.status === "Replied").length;
+  const contactedCount = contacts.filter((c) => c.status !== "Not Contacted").length;
+  const responseRate = contactedCount > 0 ? Math.round((repliedCount / contactedCount) * 100) : 0;
   return {
-    kolCount: demoKols.length,
-    emailCount: demoSentMessages.length + 3,
-    sentEmails: demoSentMessages.length,
-    repliedEmails: 2,
-    responseRate: 40,
+    kolCount: contacts.length,
+    emailCount: sentMessages.length,
+    sentEmails: sentMessages.length,
+    repliedEmails: repliedCount,
+    responseRate,
   };
 }
 
-export function getKolById(id: string): KOL | undefined {
-  return demoKols.find((k) => k.id === id);
+export function getContactById(id: string): Contact | undefined {
+  return loadAllContacts().find((k) => k.id === id);
 }
 
 export const typeIconMap: Record<string, string> = {

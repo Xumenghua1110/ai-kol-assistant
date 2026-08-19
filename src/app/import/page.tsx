@@ -4,7 +4,7 @@ import { useState, useRef } from "react";
 import { Upload, FileSpreadsheet, Check, AlertCircle, X, Users, ArrowRight } from "lucide-react";
 import Link from "next/link";
 import * as XLSX from "xlsx";
-import { CONTACT_TYPES, OUTREACH_STATUS, type KOL, type ContactType, type OutreachStatus } from "@/lib/demoData";
+import { CONTACT_TYPES, OUTREACH_STATUS, type Contact, type ContactType, type OutreachStatus } from "@/lib/demoData";
 
 interface ParsedRow {
   [key: string]: string | number | null;
@@ -42,7 +42,7 @@ const DEFAULT_MAPPING: ColumnMapping = {
 
 const STORAGE_KEY = "kol_contacts";
 
-function loadContacts(): KOL[] {
+function loadContacts(): Contact[] {
   if (typeof window === "undefined") return [];
   try {
     const data = localStorage.getItem(STORAGE_KEY);
@@ -50,7 +50,7 @@ function loadContacts(): KOL[] {
   } catch { return []; }
 }
 
-function saveContacts(contacts: KOL[]) {
+function saveContacts(contacts: Contact[]) {
   localStorage.setItem(STORAGE_KEY, JSON.stringify(contacts));
 }
 
@@ -125,7 +125,7 @@ export default function ImportPage() {
       return n > max ? n : max;
     }, 12);
 
-    const newContacts: KOL[] = rows.map((row, i) => {
+    const newContacts: Contact[] = rows.map((row, i) => {
       const name = String(row[mapping.name] || `Contact ${i + 1}`);
       const niche = mapping.niche ? String(row[mapping.niche] || "") : "";
       const region = mapping.region ? String(row[mapping.region] || "") : "";

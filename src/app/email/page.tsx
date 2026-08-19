@@ -1,7 +1,7 @@
 "use client";
 import { useEffect, useState, useRef } from "react";
 import { Sparkles, Send, Copy, Check, Mail, X, Globe, ExternalLink, MessageCircle, Camera, Phone, ChevronDown, Users, CheckSquare, Square, Zap } from "lucide-react";
-import { demoKols, type KOL } from "@/lib/demoData";
+import { demoKols, saveSentMessage, updateContactStatus, type KOL, type EmailRecord } from "@/lib/demoData";
 
 const STORAGE_KEY = "kol_contacts";
 
@@ -34,6 +34,22 @@ const toneByLang: Record<string, string> = {
 
 const channelLabels: Record<string, string> = { email: "Email", whatsapp: "WhatsApp", instagram: "Instagram DM" };
 const defaultSender = "eaea@ktechenergy.com";
+
+function recordSentMessage(kolId: string, channel: string, subject: string | null, body: string, language: string, cooperationType: string) {
+  const msg: EmailRecord = {
+    id: `msg_${Date.now()}_${Math.random().toString(36).slice(2, 7)}`,
+    subject,
+    body,
+    language,
+    status: "Sent",
+    channel,
+    cooperationType,
+    kolId,
+    createdAt: new Date().toISOString(),
+  };
+  saveSentMessage(msg);
+  updateContactStatus(kolId, "Sent");
+}
 
 function getKolContacts(kol: KOL) {
   const contacts: { type: string; value: string; label: string }[] = [];
@@ -346,13 +362,14 @@ export default function EmailGenerator() {
 
   const handleSendClick = () => {
     if (!result) { alert("Please generate content first."); return; }
-    if (!selectedKol) { alert("Please select a KOL first."); return; }
+    if (!selectedKol) { alert("Please select a contact first."); return; }
     setShowSendModal(true);
   };
 
   const openFoxmail = () => {
     const { to, subject, body } = getEmailData();
-    if (!to) { alert("No email address found for this KOL."); return; }
+    if (!to) { alert("No email address found for this contact."); return; }
+    recordSentMessage(selectedKol, "email", subject, body, language, cooperationType);
     const textarea = document.createElement("textarea");
     textarea.value = body;
     textarea.style.position = "fixed";
@@ -377,6 +394,7 @@ export default function EmailGenerator() {
     const waContacts = contacts.filter((c) => c.type === "whatsapp");
     if (waContacts.length === 0) { alert("No WhatsApp number found."); return; }
     const phone = waContacts[0].value.replace(/[^0-9]/g, "");
+    recordSentMessage(selectedKol, "whatsapp", null, result, language, cooperationType);
     const msg = encodeURIComponent(result);
     window.open(`https://wa.me/${phone}?text=${msg}`, "_blank");
     setShowSendModal(false);
@@ -388,6 +406,7 @@ export default function EmailGenerator() {
     const igContacts = contacts.filter((c) => c.type === "instagram");
     if (igContacts.length === 0) { alert("No Instagram handle found."); return; }
     const username = igContacts[0].value.replace(/^@/, "");
+    recordSentMessage(selectedKol, "instagram", null, result, language, cooperationType);
     navigator.clipboard.writeText(result).catch(() => {});
     window.open(`https://www.instagram.com/${username}/`, "_blank");
     setShowSendModal(false);
@@ -472,6 +491,7 @@ export default function EmailGenerator() {
     const subjectLine = r.content.match(/^(Subject|Asunto|Assunto|主题[：:])\s*(.+)/i);
     const subject = subjectLine ? subjectLine[2].trim() : `Collaboration — Ktech Solar x ${r.kolName}`;
     const body = r.content.replace(/^(Subject|Asunto|Assunto|主题[：:])\s*.+\n?/i, "").trim();
+    recordSentMessage(r.kolId, r.channel, subject, body, r.language, cooperationType);
     const textarea = document.createElement("textarea");
     textarea.value = body;
     textarea.style.position = "fixed";
