@@ -1,19 +1,19 @@
 "use client";
 import { useEffect, useState, useRef } from "react";
 import { Sparkles, Send, Copy, Check, Mail, X, Globe, ExternalLink, MessageCircle, Camera, Phone, ChevronDown, Users, CheckSquare, Square, Zap } from "lucide-react";
-import { demoKols, saveSentMessage, updateContactStatus, type KOL, type EmailRecord } from "@/lib/demoData";
+import { demoContacts, saveSentMessage, updateContactStatus, type Contact, type EmailRecord } from "@/lib/demoData";
 
 const STORAGE_KEY = "kol_contacts";
 
-function loadAllContacts(): KOL[] {
-  if (typeof window === "undefined") return demoKols;
+function loadAllContacts(): Contact[] {
+  if (typeof window === "undefined") return demoContacts;
   try {
     const data = localStorage.getItem(STORAGE_KEY);
-    const stored: KOL[] = data ? JSON.parse(data) : [];
+    const stored: Contact[] = data ? JSON.parse(data) : [];
     const storedIds = new Set(stored.map((c) => c.id));
-    const newDemos = demoKols.filter((k) => !storedIds.has(k.id));
+    const newDemos = demoContacts.filter((k) => !storedIds.has(k.id));
     return [...stored, ...newDemos];
-  } catch { return demoKols; }
+  } catch { return demoContacts; }
 }
 
 const languageMap: Record<string, string> = {
@@ -51,7 +51,7 @@ function recordSentMessage(kolId: string, channel: string, subject: string | nul
   updateContactStatus(kolId, "Sent");
 }
 
-function getKolContacts(kol: KOL) {
+function getKolContacts(kol: Contact) {
   const contacts: { type: string; value: string; label: string }[] = [];
   const ci = kol.contactInfo;
   if (ci?.emails?.length > 0) ci.emails.forEach((e) => contacts.push({ type: "email", value: e, label: e }));
@@ -74,7 +74,7 @@ const contactColor = (type: string) => {
   return "bg-gray-100 text-gray-600";
 };
 
-function generateEmailContent(kol: KOL, language: string, cooperationType: string, channel: string): string {
+function generateEmailContent(kol: Contact, language: string, cooperationType: string, channel: string): string {
   const kolName = kol.name;
   const niche = kol.niche || "solar energy";
   const region = kol.region || "your region";
@@ -257,7 +257,7 @@ interface BatchResult {
 }
 
 export default function EmailGenerator() {
-  const [kols, setKols] = useState<KOL[]>([]);
+  const [kols, setKols] = useState<Contact[]>([]);
   const [batchMode, setBatchMode] = useState(false);
   const [selectedKol, setSelectedKol] = useState("");
   const [language, setLanguage] = useState("English");
@@ -350,10 +350,10 @@ export default function EmailGenerator() {
 
   const getEmailData = () => {
     const kol = kols.find((k) => k.id === selectedKol);
-    const contacts = getKolContacts(kol || {} as KOL);
+    const contacts = getKolContacts(kol || {} as Contact);
     const emailContacts = contacts.filter((c) => c.type === "email");
     const to = emailContacts.map((c) => c.value).join(",");
-    const kolName = kol?.name || "KOL";
+    const kolName = kol?.name || "Contact";
     const subjectLine = result.match(/Subject:\s*(.+)/i) || result.match(/Asunto:\s*(.+)/i) || result.match(/Assunto:\s*(.+)/i) || result.match(/主题：\s*(.+)/i);
     const subject = subjectLine ? subjectLine[1].trim() : getSubjectFallback(kolName);
     const bodyText = result.replace(/^(Subject|Asunto|Assunto|主题[：:])\s*.+\n?/i, "").trim();
@@ -390,7 +390,7 @@ export default function EmailGenerator() {
 
   const openWhatsApp = () => {
     const kol = kols.find((k) => k.id === selectedKol);
-    const contacts = getKolContacts(kol || {} as KOL);
+    const contacts = getKolContacts(kol || {} as Contact);
     const waContacts = contacts.filter((c) => c.type === "whatsapp");
     if (waContacts.length === 0) { alert("No WhatsApp number found."); return; }
     const phone = waContacts[0].value.replace(/[^0-9]/g, "");
@@ -402,7 +402,7 @@ export default function EmailGenerator() {
 
   const openInstagram = () => {
     const kol = kols.find((k) => k.id === selectedKol);
-    const contacts = getKolContacts(kol || {} as KOL);
+    const contacts = getKolContacts(kol || {} as Contact);
     const igContacts = contacts.filter((c) => c.type === "instagram");
     if (igContacts.length === 0) { alert("No Instagram handle found."); return; }
     const username = igContacts[0].value.replace(/^@/, "");
