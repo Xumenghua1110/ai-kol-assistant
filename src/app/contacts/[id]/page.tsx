@@ -18,7 +18,7 @@ export default function KOLDetail({ params }: { params: { id: string } }) {
   if (!kol) {
     return (
       <div className="p-8 max-w-4xl">
-        <Link href="/kols" className="inline-flex items-center gap-1.5 text-sm text-[var(--muted)] hover:text-[var(--foreground)] mb-6 transition-colors">
+        <Link href="/contacts" className="inline-flex items-center gap-1.5 text-sm text-[var(--muted)] hover:text-[var(--foreground)] mb-6 transition-colors">
           <ArrowLeft className="w-4 h-4" /> Back to Contacts
         </Link>
         <div className="bg-[var(--card-bg)] border border-[var(--card-border)] rounded-xl p-12 text-center">
@@ -36,7 +36,7 @@ export default function KOLDetail({ params }: { params: { id: string } }) {
 
   return (
     <div className="p-8 max-w-4xl">
-      <Link href="/kols" className="inline-flex items-center gap-1.5 text-sm text-[var(--muted)] hover:text-[var(--foreground)] mb-6 transition-colors">
+      <Link href="/contacts" className="inline-flex items-center gap-1.5 text-sm text-[var(--muted)] hover:text-[var(--foreground)] mb-6 transition-colors">
         <ArrowLeft className="w-4 h-4" /> Back to Contacts
       </Link>
 
@@ -59,7 +59,7 @@ export default function KOLDetail({ params }: { params: { id: string } }) {
               </p>
             </div>
           </div>
-          <Link href="/email" className="flex items-center gap-2 bg-[var(--primary)] text-white px-4 py-2.5 rounded-lg text-sm font-medium hover:bg-[var(--primary-hover)] transition-colors">
+          <Link href="/outreach" className="flex items-center gap-2 bg-[var(--primary)] text-white px-4 py-2.5 rounded-lg text-sm font-medium hover:bg-[var(--primary-hover)] transition-colors">
             <Mail className="w-4 h-4" /> Generate Email
           </Link>
         </div>

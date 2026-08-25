@@ -3,9 +3,9 @@ import "./globals.css";
 import Sidebar from "@/components/Sidebar";
 
 export const metadata: Metadata = {
-  title: "AI Solar Connect",
+  title: "AI Outreach Hub",
   description:
-    "AI-powered contact discovery, profile analysis, and personalized outreach for solar industry global marketing teams.",
+    "AI-powered multilingual outreach platform for global business development teams. Manage contacts, generate personalized messages, and track outreach across Email, WhatsApp, and Instagram.",
 };
 
 export default function RootLayout({

@@ -127,7 +127,7 @@ export default function SentMessages() {
                     <div className="mt-3 pt-3 border-t border-gray-200 flex items-center gap-4 text-xs text-[var(--muted)]">
                       <span>Platform: {kolPlatform}</span>
                       <span>Cooperation: {msg.cooperationType}</span>
-                      <Link href={`/kols/${msg.kolId}`} className="flex items-center gap-1 text-[var(--primary)] hover:underline ml-auto" onClick={(e) => e.stopPropagation()}>
+                      <Link href={`/contacts/${msg.kolId}`} className="flex items-center gap-1 text-[var(--primary)] hover:underline ml-auto" onClick={(e) => e.stopPropagation()}>
                         View Contact Profile <ExternalLink className="w-3 h-3" />
                       </Link>
                     </div>

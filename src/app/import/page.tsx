@@ -183,7 +183,7 @@ export default function ImportPage() {
     <div className="p-8 max-w-5xl">
       <div className="mb-8">
         <div className="flex items-center gap-2 mb-2">
-          <Link href="/kols" className="text-sm text-[var(--muted)] hover:text-[var(--foreground)] flex items-center gap-1 transition-colors">
+          <Link href="/contacts" className="text-sm text-[var(--muted)] hover:text-[var(--foreground)] flex items-center gap-1 transition-colors">
             <ArrowRight className="w-4 h-4 rotate-180" /> Back to Contacts
           </Link>
         </div>
@@ -350,7 +350,7 @@ export default function ImportPage() {
           <h2 className="text-xl font-bold mb-2">Import Complete!</h2>
           <p className="text-[var(--muted)] mb-6">{importedCount} contacts imported from &quot;{sourceName}&quot;</p>
           <div className="flex gap-3 justify-center">
-            <Link href="/kols" className="px-4 py-2.5 bg-[var(--primary)] text-white rounded-lg text-sm font-medium hover:bg-[var(--primary-hover)] transition-colors">View Contacts</Link>
+            <Link href="/contacts" className="px-4 py-2.5 bg-[var(--primary)] text-white rounded-lg text-sm font-medium hover:bg-[var(--primary-hover)] transition-colors">View Contacts</Link>
             <button onClick={resetImport} className="px-4 py-2.5 border border-[var(--card-border)] rounded-lg text-sm font-medium hover:bg-gray-50 transition-colors">Import Another File</button>
           </div>
         </div>

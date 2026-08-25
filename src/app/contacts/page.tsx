@@ -125,7 +125,7 @@ export default function KOLDiscovery() {
           <Link href="/import" className="flex items-center gap-2 bg-green-600 text-white px-4 py-2.5 rounded-lg text-sm font-medium hover:bg-green-700 transition-colors">
             <Plus className="w-4 h-4" /> Import
           </Link>
-          <Link href="/email" className="flex items-center gap-2 bg-[var(--primary)] text-white px-4 py-2.5 rounded-lg text-sm font-medium hover:bg-[var(--primary-hover)] transition-colors">
+          <Link href="/outreach" className="flex items-center gap-2 bg-[var(--primary)] text-white px-4 py-2.5 rounded-lg text-sm font-medium hover:bg-[var(--primary-hover)] transition-colors">
             <Send className="w-4 h-4" /> Outreach
           </Link>
         </div>
@@ -385,7 +385,7 @@ export default function KOLDiscovery() {
                   <button onClick={() => toggleSelect(kol.id)} className="text-[var(--muted)] hover:text-[var(--primary)] transition-colors shrink-0">
                     {isSelected ? <CheckSquare className="w-4 h-4 text-[var(--primary)]" /> : <Square className="w-4 h-4" />}
                   </button>
-                  <Link href={`/kols/${kol.id}`} className="flex items-center gap-4 flex-1 min-w-0">
+                  <Link href={`/contacts/${kol.id}`} className="flex items-center gap-4 flex-1 min-w-0">
                     <div className="w-12 h-12 rounded-full bg-gray-100 flex items-center justify-center shrink-0">
                       <PlatformIcon className="w-5 h-5 text-[var(--muted)]" />
                     </div>
@@ -396,7 +396,7 @@ export default function KOLDiscovery() {
                           <TypeIcon className="w-3 h-3 inline mr-1 -ml-0.5" />{kol.type}
                         </span>
                       </div>
-                      <p className="text-sm text-[var(--muted)] mt-0.5 truncate">{kol.niche || "Solar Energy"} · {kol.region || "No region"}{kol.language ? ` · ${kol.language}` : ""}</p>
+                      <p className="text-sm text-[var(--muted)] mt-0.5 truncate">{kol.niche || "General"} · {kol.region || "No region"}{kol.language ? ` · ${kol.language}` : ""}</p>
                     </div>
                   </Link>
                   <div className="flex items-center gap-2 shrink-0">
@@ -410,7 +410,7 @@ export default function KOLDiscovery() {
                     <button onClick={(e) => { e.preventDefault(); setDeleteConfirm(kol.id); }} className="text-[var(--muted)] hover:text-red-500 transition-colors p-1" title="Delete">
                       <Trash2 className="w-3.5 h-3.5" />
                     </button>
-                    <Link href={`/kols/${kol.id}`} className="text-[var(--muted)] hover:text-[var(--primary)] transition-colors"><ChevronRight className="w-4 h-4" /></Link>
+                    <Link href={`/contacts/${kol.id}`} className="text-[var(--muted)] hover:text-[var(--primary)] transition-colors"><ChevronRight className="w-4 h-4" /></Link>
                   </div>
                 </div>
                 {kol.followers > 0 && <div className="mt-2 ml-15 text-xs text-[var(--muted)]">{kol.followers.toLocaleString()} followers{kol.engagementRate ? ` · ${kol.engagementRate}% engagement` : ""}{kol.avgViews ? ` · ${kol.avgViews.toLocaleString()} avg views` : ""}</div>}

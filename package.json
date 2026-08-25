@@ -1,7 +1,29 @@
 {
-  "name": "ai-kol-assistant",
-  "version": "0.1.1",
-  "private": true,
+  "name": "outreach-hub",
+  "version": "0.2.0",
+  "private": false,
+  "description": "AI-powered multilingual outreach platform for global BD teams",
+  "author": "",
+  "license": "MIT",
+  "homepage": "https://github.com/Xumenghua1110/outreach-hub#readme",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/Xumenghua1110/outreach-hub.git"
+  },
+  "bugs": {
+    "url": "https://github.com/Xumenghua1110/outreach-hub/issues"
+  },
+  "keywords": [
+    "outreach",
+    "business-development",
+    "ai",
+    "multilingual",
+    "kol",
+    "email-generator",
+    "whatsapp",
+    "instagram",
+    "crm"
+  ],
   "scripts": {
     "dev": "next dev",
     "build": "next build",

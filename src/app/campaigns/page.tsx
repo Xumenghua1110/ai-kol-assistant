@@ -164,7 +164,7 @@ export default function Campaigns() {
                 </label>
                 <input
                   type="text"
-                  placeholder="e.g., Brazil Solar Launch"
+                  placeholder="e.g., Q4 Outreach Campaign"
                   value={newCampaign.name}
                   onChange={(e) =>
                     setNewCampaign({ ...newCampaign, name: e.target.value })

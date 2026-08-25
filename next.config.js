@@ -1,7 +1,7 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
   output: 'export',
-  basePath: '/ai-kol-assistant',
+  basePath: '/outreach-hub',
   experimental: {
     serverComponentsExternalPackages: ["@prisma/client"],
   },

@@ -14,9 +14,9 @@ import {
 
 const navigation = [
   { name: "Dashboard", href: "/", icon: LayoutDashboard },
-  { name: "Contacts", href: "/kols", icon: Users },
+  { name: "Contacts", href: "/contacts", icon: Users },
   { name: "Import", href: "/import", icon: Upload },
-  { name: "Outreach", href: "/email", icon: Mail },
+  { name: "Outreach", href: "/outreach", icon: Mail },
   { name: "Sent", href: "/sent", icon: Send },
   { name: "Campaigns", href: "/campaigns", icon: BarChart3 },
 ];
@@ -38,10 +38,10 @@ export default function Sidebar() {
         </div>
         <div>
           <h1 className="text-white text-sm font-semibold tracking-wide">
-            AI Solar Connect
+            AI Outreach Hub
           </h1>
           <p className="text-[var(--sidebar-text)] text-xs">
-            Solar Outreach Powered by AI
+            Multilingual Outreach Powered by AI
           </p>
         </div>
       </div>

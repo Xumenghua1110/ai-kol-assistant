@@ -2,6 +2,8 @@
 import { useEffect, useState, useRef } from "react";
 import { Sparkles, Send, Copy, Check, Mail, X, Globe, ExternalLink, MessageCircle, Camera, Phone, ChevronDown, Users, CheckSquare, Square, Zap } from "lucide-react";
 import { demoContacts, saveSentMessage, updateContactStatus, type Contact, type EmailRecord } from "@/lib/demoData";
+import { brandConfig } from "@/config/brand.config";
+import { generateEmailContent } from "@/config/templates.config";
 
 const STORAGE_KEY = "kol_contacts";
 
@@ -21,10 +23,10 @@ const languageMap: Record<string, string> = {
 };
 
 const brandInfoByLang: Record<string, string> = {
-  English: `Ktech Solar is a Chinese manufacturer of solar inverters and photovoltaic energy systems. We specialize in hybrid and off-grid inverters with integrated MPPT, IP65 protection, and LiFePO4 battery compatibility. We are looking for authentic partners in the solar installation space who combine quality technical work with a genuine digital presence. Our website: https://www.ktechsolar.com/`,
-  Portuguese: `A Ktech Solar é uma fabricante chinesa de inversores solares e sistemas de energia fotovoltaica. Somos especializados em inversores híbridos e off-grid com MPPT integrado, proteção IP65 e compatibilidade com baterias LiFePO4. Buscamos parceiros autênticos no segmento de instalação solar que combinem trabalho técnico de qualidade com uma presença digital genuína. Nosso site: https://www.ktechsolar.com/`,
-  Spanish: `Ktech Solar es un fabricante chino de inversores solares y sistemas de energía fotovoltaica. Nos especializamos en inversores híbridos y off-grid con MPPT integrado, protección IP65 y compatibilidad con baterías LiFePO4. Buscamos socios auténticos en el sector de instalación solar que combinen un trabajo técnico de calidad con una presencia digital genuina. Nuestro sitio web: https://www.ktechsolar.com/`,
-  Chinese: `Ktech Solar是一家中国太阳能逆变器和光伏发电系统制造商。我们专注于集成MPPT、IP65防护、兼容LiFePO4电池的混合和离网逆变器。我们正在寻找太阳能安装领域的真正合作伙伴，将优质技术工作与真实的数字化影响力相结合。我们的网站：https://www.ktechsolar.com/`,
+  English: brandConfig.brand.productDescription.English,
+  Portuguese: brandConfig.brand.productDescription.Portuguese,
+  Spanish: brandConfig.brand.productDescription.Spanish,
+  Chinese: brandConfig.brand.productDescription.Chinese,
 };
 
 const toneByLang: Record<string, string> = {
@@ -33,7 +35,7 @@ const toneByLang: Record<string, string> = {
 };
 
 const channelLabels: Record<string, string> = { email: "Email", whatsapp: "WhatsApp", instagram: "Instagram DM" };
-const defaultSender = "eaea@ktechenergy.com";
+const defaultSender = brandConfig.sender.email;
 
 function recordSentMessage(kolId: string, channel: string, subject: string | null, body: string, language: string, cooperationType: string) {
   const msg: EmailRecord = {
@@ -74,178 +76,7 @@ const contactColor = (type: string) => {
   return "bg-gray-100 text-gray-600";
 };
 
-function generateEmailContent(kol: Contact, language: string, cooperationType: string, channel: string): string {
-  const kolName = kol.name;
-  const niche = kol.niche || "solar energy";
-  const region = kol.region || "your region";
-  const platform = kol.platform || "Website";
-  const type = kol.type;
-  const contactPerson = kol.contactPerson;
-
-  const greeting = contactPerson ? contactPerson.split(",")[0].trim().split(" ").pop() : kolName;
-
-  const templates: Record<string, Record<string, string>> = {
-    English: {
-      email: type === "Association"
-        ? `Subject: Partnership Inquiry — Ktech Solar x ${kolName}
-
-Dear ${greeting},
-
-I hope this message finds you well. I'm Eaea, Overseas Media Relations Specialist at Ktech Solar.
-
-Ktech Solar is a Chinese manufacturer specializing in hybrid and off-grid solar inverters with integrated MPPT, IP65 protection, and LiFePO4 battery compatibility. We are actively expanding our presence in ${region} and are very interested in exploring collaboration opportunities with ${kolName}.
-
-We believe a partnership could bring mutual value — from product demonstrations at your events to joint educational content for your members. We'd love to learn more about your upcoming initiatives and discuss how Ktech Solar can contribute.
-
-Would you be available for a brief introductory call?
-
-Best regards,
-Eaea | Overseas Media Relations Specialist
-Ktech Solar
-WhatsApp: +86-18914111136
-Email: eaea@ktechenergy.com
-https://www.ktechsolar.com/`
-        : `Subject: Collaboration Opportunity — Ktech Solar x ${kolName}
-
-Hi ${greeting},
-
-I've been following your ${platform} content and really impressed by your ${niche} coverage. Your authentic approach to ${niche.toLowerCase()} in ${region} is exactly what we look for in a partner.
-
-I'm Eaea from Ktech Solar — we manufacture hybrid and off-grid solar inverters with integrated MPPT and IP65 protection. We're expanding our presence in ${region} and believe your audience would genuinely benefit from our products.
-
-We'd love to send you our latest hybrid inverter for an honest review. No scripts, no constraints — just your authentic take.
-
-Would you be open to a quick chat about collaboration?
-
-Best regards,
-Eaea | Ktech Solar
-WhatsApp: +86-18914111136
-https://www.ktechsolar.com/`,
-      whatsapp: `Hi ${greeting}! \n\nI'm Eaea from Ktech Solar. Love your ${niche} content on ${platform}!\n\nWe make hybrid solar inverters and think your audience in ${region} would really benefit. Would love to send you one for an honest review — no strings attached.\n\nInterested in a quick chat? `,
-      instagram: `Hey ${greeting}! Love your solar content 🔆 We'd love to collab — DM open for details!`,
-    },
-    Portuguese: {
-      email: type === "Association"
-        ? `Assunto: Proposta de Parceria — Ktech Solar x ${kolName}
-
-Prezado(a) ${greeting},
-
-Espero que esta mensagem o(a) encontre bem. Sou Eaea, Especialista em Relações com Mídia Internacional da Ktech Solar.
-
-A Ktech Solar é uma fabricante chinesa especializada em inversores solares híbridos e off-grid com MPPT integrado, proteção IP65 e compatibilidade com baterias LiFePO4. Estamos expandindo ativamente nossa presença no(a) ${region} e temos grande interesse em explorar oportunidades de colaboração com ${kolName}.
-
-Acreditamos que uma parceria pode trazer valor mútuo — desde demonstrações de produtos em seus eventos até conteúdo educacional conjunto para seus membros. Gostaríamos de saber mais sobre suas próximas iniciativas e discutir como a Ktech Solar pode contribuir.
-
-Você estaria disponível para uma breve conversa introdutória?
-
-Abraços,
-Eaea | Especialista em Relações com Mídia Internacional
-Ktech Solar
-WhatsApp: +86-18914111136
-Email: eaea@ktechenergy.com
-https://www.ktechsolar.com/`
-        : `Assunto: Proposta de Parceria — Ktech Solar x ${kolName}
-
-Olá ${greeting},
-
-Acompanho seu conteúdo no ${platform} e fico impressionado com sua cobertura sobre ${niche}. Sua abordagem autêntica para ${niche.toLowerCase()} na ${region} é exatamente o que procuramos em um parceiro.
-
-Sou Eaea da Ktech Solar — fabricamos inversores solares híbridos e off-grid com MPPT integrado e proteção IP65. Estamos expandindo nossa presença na ${region} e acreditamos que seu público se beneficiaria genuinamente dos nossos produtos.
-
-Gostaríamos de enviar nosso mais recente inversor híbrido para uma avaliação honesta. Sem scripts, sem restrições — apenas sua opinião autêntica.
-
-Toparia um bate-papo rápido sobre colaboração?
-
-Abraços,
-Eaea | Ktech Solar
-WhatsApp: +86-18914111136
-https://www.ktechsolar.com/`,
-      whatsapp: `Oi ${greeting}! \n\nSou Eaea da Ktech Solar. Adoro seu conteúdo sobre ${niche} no ${platform}!\n\nFabricamos inversores solares híbridos e achamos que seu público na ${region} ia gostar. Queríamos te enviar um para avaliação — sem compromisso.\n\nBora conversar? 🌞`,
-      instagram: `Oi ${greeting}! Adorei seu conteúdo solar 🔆 Queremos colaborar — DM aberto!`,
-    },
-    Spanish: {
-      email: type === "Association"
-        ? `Asunto: Propuesta de Colaboración — Ktech Solar x ${kolName}
-
-Estimado(a) ${greeting},
-
-Espero que este mensaje le encuentre bien. Soy Eaea, Especialista en Relaciones con Medios Internacionales de Ktech Solar.
-
-Ktech Solar es un fabricante chino especializado en inversores solares híbridos y off-grid con MPPT integrado, protección IP65 y compatibilidad con baterías LiFePO4. Estamos expandiendo activamente nuestra presencia en ${region} y estamos muy interesados en explorar oportunidades de colaboración con ${kolName}.
-
-Creemos que una asociación podría traer valor mutuo — desde demostraciones de productos en sus eventos hasta contenido educativo conjunto para sus miembros. Nos encantaría conocer más sobre sus próximas iniciativas y discutir cómo Ktech Solar puede contribuir.
-
-¿Estaría disponible para una breve llamada introductoria?
-
-Saludos cordiales,
-Eaea | Especialista en Relaciones con Medios Internacionales
-Ktech Solar
-WhatsApp: +86-18914111136
-Email: eaea@ktechenergy.com
-https://www.ktechsolar.com/`
-        : `Asunto: Propuesta de Colaboración — Ktech Solar x ${kolName}
-
-Hola ${greeting},
-
-He seguido tu contenido en ${platform} y me impresiona mucho tu cobertura sobre ${niche}. Tu enfoque auténtico de ${niche.toLowerCase()} en ${region} es exactamente lo que buscamos en un socio.
-
-Soy Eaea de Ktech Solar — fabricamos inversores solares híbridos y off-grid con MPPT integrado y protección IP65. Estamos expandiendo nuestra presencia en ${region} y creemos que tu audiencia se beneficiaría genuinamente de nuestros productos.
-
-Nos encantaría enviarte nuestro último inversor híbrido para una revisión honesta. Sin guiones, sin restricciones — solo tu opinión auténtica.
-
-¿Te gustaría charlar brevemente sobre una colaboración?
-
-Saludos,
-Eaea | Ktech Solar
-WhatsApp: +86-18914111136
-https://www.ktechsolar.com/`,
-      whatsapp: `¡Hola ${greeting}! \n\nSoy Eaea de Ktech Solar. ¡Me encanta tu contenido sobre ${niche} en ${platform}!\n\nFabricamos inversores solares híbridos y creemos que tu audiencia en ${region} lo disfrutaría. Nos gustaría enviarte uno para una revisión honesta — sin compromiso.\n\n¿Charlamos? 🌞`,
-      instagram: `¡Hola ${greeting}! Me encantó tu contenido solar 🔆 ¡Queremos colaborar — DM abierto!`,
-    },
-    Chinese: {
-      email: type === "Association"
-        ? `主题：合作洽谈 — Ktech Solar x ${kolName}
-
-尊敬的${greeting}：
-
-您好！我是Ktech Solar海外媒体关系专员Eaea。
-
-Ktech Solar是一家中国太阳能逆变器和光伏发电系统制造商，专注于集成MPPT、IP65防护、兼容LiFePO4电池的混合和离网逆变器。我们正在积极拓展${region}市场，非常有兴趣与${kolName}探讨合作机会。
-
-我们相信合作可以带来双赢——从在您的活动中进行产品展示，到为您的会员提供联合教育内容。我们希望了解更多贵方的近期计划，并探讨Ktech Solar如何贡献力量。
-
-您方便安排一次简短的介绍通话吗？
-
-此致，
-Eaea | 海外媒体关系专员
-Ktech Solar
-WhatsApp: +86-18914111136
-Email: eaea@ktechenergy.com
-https://www.ktechsolar.com/`
-        : `主题：合作邀约 — Ktech Solar x ${kolName}
-
-${greeting}你好，
-
-我一直在关注你们的${platform}内容，对你们的${niche}报道印象深刻。你们在${region}对${niche.toLowerCase()}的真实态度正是我们寻找合作伙伴的标准。
-
-我是Ktech Solar的Eaea——我们生产带集成MPPT和IP65防护的混合和离网太阳能逆变器。我们正在拓展${region}市场，相信你们的受众会真正受益于我们的产品。
-
-我们想寄给你们最新的混合逆变器进行真实评测。没有脚本，没有约束——只需要你们的真实反馈。
-
-方便简单聊聊合作吗？
-
-此致，
-Eaea | Ktech Solar
-WhatsApp: +86-18914111136
-https://www.ktechsolar.com/`,
-      whatsapp: `你好${greeting}！👋\n\n我是Ktech Solar的Eaea，很喜欢你在${platform}上的${niche}内容！\n\n我们做混合太阳能逆变器，觉得${region}的受众会感兴趣。想寄一台给你做真实评测——无任何附加条件。\n\n有兴趣聊聊吗？🌞`,
-      instagram: `嗨${greeting}！喜欢你的太阳能内容 🔆 想合作——DM详聊！`,
-    },
-  };
-
-  const langTemplates = templates[language] || templates["English"];
-  return langTemplates[channel] || langTemplates["email"];
-}
+// generateEmailContent is imported from @/config/templates.config
 
 interface BatchResult {
   kolId: string;
@@ -340,10 +171,10 @@ export default function EmailGenerator() {
 
   const getSubjectFallback = (kolName: string) => {
     const fallbacks: Record<string, string> = {
-      English: `Loved your solar content, ${kolName} — let's collaborate`,
-      Portuguese: `Seus conteúdos sobre energia solar me impressionaram, ${kolName} — proposta de parceria`,
-      Spanish: `Me encantó tu contenido sobre energía solar, ${kolName} — propuesta de colaboración`,
-      Chinese: `很喜欢你的太阳能内容，${kolName}——合作邀约`,
+      English: `Loved your content, ${kolName} — let's collaborate`,
+      Portuguese: `Seus conteúdos me impressionaram, ${kolName} — proposta de parceria`,
+      Spanish: `Me encantó tu contenido, ${kolName} — propuesta de colaboración`,
+      Chinese: `很喜欢你的内容，${kolName}——合作邀约`,
     };
     return fallbacks[language] || fallbacks["English"];
   };
@@ -489,7 +320,7 @@ export default function EmailGenerator() {
 
   const sendBatchEmail = (r: BatchResult) => {
     const subjectLine = r.content.match(/^(Subject|Asunto|Assunto|主题[：:])\s*(.+)/i);
-    const subject = subjectLine ? subjectLine[2].trim() : `Collaboration — Ktech Solar x ${r.kolName}`;
+    const subject = subjectLine ? subjectLine[2].trim() : `Collaboration — ${brandConfig.brand.companyName} x ${r.kolName}`;
     const body = r.content.replace(/^(Subject|Asunto|Assunto|主题[：:])\s*.+\n?/i, "").trim();
     recordSentMessage(r.kolId, r.channel, subject, body, r.language, cooperationType);
     const textarea = document.createElement("textarea");

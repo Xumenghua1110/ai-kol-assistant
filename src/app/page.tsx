@@ -27,7 +27,7 @@ export default function Dashboard() {
       value: stats.kolCount.toString(),
       icon: Users,
       change: `${stats.kolCount} contacts in database`,
-      link: "/kols",
+      link: "/contacts",
     },
     {
       label: "Messages Generated",
@@ -57,7 +57,7 @@ export default function Dashboard() {
       <div className="mb-8">
         <h1 className="text-2xl font-bold text-[var(--foreground)]">Dashboard</h1>
         <p className="text-[var(--muted)] mt-1">
-          Welcome to AI Solar Connect — your AI-powered solar outreach toolkit.
+          Welcome to AI Outreach Hub — your AI-powered multilingual outreach toolkit.
         </p>
       </div>
 
@@ -91,7 +91,7 @@ export default function Dashboard() {
       <div className="mb-8">
         <h2 className="text-lg font-semibold mb-4">Quick Actions</h2>
         <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-          <Link href="/kols" className="group bg-[var(--card-bg)] border border-[var(--card-border)] rounded-xl p-5 hover:border-[var(--primary)]/30 transition-all hover:shadow-sm">
+          <Link href="/contacts" className="group bg-[var(--card-bg)] border border-[var(--card-border)] rounded-xl p-5 hover:border-[var(--primary)]/30 transition-all hover:shadow-sm">
             <div className="w-10 h-10 rounded-lg bg-blue-50 text-blue-600 flex items-center justify-center mb-3">
               <Users className="w-5 h-5" />
             </div>
@@ -100,7 +100,7 @@ export default function Dashboard() {
             </h3>
             <p className="text-sm text-[var(--muted)] mt-1">Import a contact by their social media profile URL</p>
           </Link>
-          <Link href="/email" className="group bg-[var(--card-bg)] border border-[var(--card-border)] rounded-xl p-5 hover:border-[var(--primary)]/30 transition-all hover:shadow-sm">
+          <Link href="/outreach" className="group bg-[var(--card-bg)] border border-[var(--card-border)] rounded-xl p-5 hover:border-[var(--primary)]/30 transition-all hover:shadow-sm">
             <div className="w-10 h-10 rounded-lg bg-purple-50 text-purple-600 flex items-center justify-center mb-3">
               <MessageSquare className="w-5 h-5" />
             </div>

@@ -1,4 +1,4 @@
--- Supabase Database Initialization for AI KOL Outreach Assistant
+-- Supabase Database Initialization for AI Outreach Hub
 -- Run this in Supabase SQL Editor
 
 -- Create KOLs table
